@@ -117,14 +117,14 @@ const Navbar1 = ({
             <Button asChild variant="outline" size="sm">
               <a href={auth.login.url}>{auth.login.title}</a>
             </Button>
-            <Button variant="hero" asChild size="sm">
+            <Button variant="hero2" asChild size="sm">
               <a href={auth.signup.url}>{auth.signup.title}</a>
             </Button>
           </div>
         </nav>
 
         {/* Mobile Menu */}
-        <div className="block lg:hidden">
+        <div className="block lg:hidden px-2">
           <div className="flex items-center justify-between">
             {/* Logo */}
             <a href={logo.url} className="flex items-center gap-2">
