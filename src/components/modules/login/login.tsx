@@ -7,18 +7,19 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Field, FieldLabel } from '@/components/ui/field';
+import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from '@/components/ui/input-group';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import z from 'zod';
 
 const formSchema = z.object({
@@ -26,16 +27,16 @@ const formSchema = z.object({
   password: z
     .string()
     .min(8, 'Password must be at least 8 characters')
-    .max(32, 'Password must be at most 32 characters'),
+    .max(32, 'Password must be at most 32 characters')
+    .regex(
+      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).+$/,
+      'Must contain one capital letter, one small letter and a number'
+    ),
 });
 
 const Login = () => {
-  const {
-    register,
-    handleSubmit,
-    setError,
-    formState: { errors },
-  } = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       email: '',
       password: '',
@@ -43,27 +44,9 @@ const Login = () => {
   });
   const [isPassword, setIsPassword] = useState(false);
 
-  const validateForm = (data: z.infer<typeof formSchema>) => {
-    try {
-      formSchema.parse(data);
-      return true;
-    } catch (error: any) {
-      if (error instanceof z.ZodError) {
-        error.issues.forEach((err) => {
-          const path = err.path[0] as keyof z.infer<typeof formSchema>;
-          setError(path, { message: err.message });
-        });
-      }
-      return false;
-    }
-  };
-
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     const formData = JSON.stringify(data);
-    if (validateForm(data)) {
-      console.log(formData);
-      // Handle login logic here
-    }
+    console.log(formData);
   };
 
   return (
@@ -79,53 +62,62 @@ const Login = () => {
           <form
             action=""
             className="space-y-5"
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={form.handleSubmit(onSubmit)}
           >
-            <Field>
-              <FieldLabel htmlFor="email">Email</FieldLabel>
-              <Input
-                id="email"
-                type="email"
-                placeholder="Enter email"
-                required
-                {...register('email')}
-              />
-              {errors.email && (
-                <p className="text-sm text-red-500 mt-1">
-                  {errors.email.message}
-                </p>
-              )}
-            </Field>
-            <Field>
-              <FieldLabel htmlFor="password">Password</FieldLabel>
-              <InputGroup>
-                <InputGroupInput
-                  id="password"
-                  type={isPassword ? 'text' : 'password'}
-                  placeholder="Enter password"
-                  required
-                  {...register('password')}
-                />
-                <InputGroupAddon align="inline-end">
-                  {isPassword ? (
-                    <EyeIcon
-                      onClick={() => setIsPassword(!isPassword)}
-                      className="cursor-pointer"
-                    />
-                  ) : (
-                    <EyeOffIcon
-                      onClick={() => setIsPassword(!isPassword)}
-                      className="cursor-pointer"
-                    />
+            <Controller
+              name="email"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="email">Email</FieldLabel>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="Enter email"
+                    required
+                    {...field}
+                    aria-invalid={fieldState.invalid}
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
                   )}
-                </InputGroupAddon>
-              </InputGroup>
-              {errors.password && (
-                <p className="text-sm text-red-500 mt-1">
-                  {errors.password.message}
-                </p>
+                </Field>
               )}
-            </Field>
+            />
+            <Controller
+              name="password"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invaild={fieldState.invalid}>
+                  <FieldLabel htmlFor="password">Password</FieldLabel>
+                  <InputGroup>
+                    <InputGroupInput
+                      id="password"
+                      type={isPassword ? 'text' : 'password'}
+                      placeholder="Enter password"
+                      required
+                      {...field}
+                    />
+                    <InputGroupAddon align="inline-end">
+                      {isPassword ? (
+                        <EyeIcon
+                          onClick={() => setIsPassword(!isPassword)}
+                          className="cursor-pointer"
+                        />
+                      ) : (
+                        <EyeOffIcon
+                          onClick={() => setIsPassword(!isPassword)}
+                          className="cursor-pointer"
+                        />
+                      )}
+                    </InputGroupAddon>
+                  </InputGroup>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
             <Button className="w-full text-white">Sign In</Button>
           </form>
           <div>
