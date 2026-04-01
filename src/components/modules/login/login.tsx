@@ -20,6 +20,7 @@ import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import z from 'zod';
 
 const formSchema = z.object({
@@ -44,9 +45,31 @@ const Login = () => {
   });
   const [isPassword, setIsPassword] = useState(false);
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
     const formData = JSON.stringify(data);
-    console.log(formData);
+
+    // console.log(process.env.NEXT_PUBLIC_BACKEND_BATTER_AUTH_URL);
+
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_BATTER_AUTH_URL}sign-in/email`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: formData,
+        }
+      );
+      if (!res.ok) {
+        toast.error(`Message: something went wrong please try again later`);
+      }
+      toast.success(`Login successfull`);
+    } catch (error) {
+      toast.error(
+        `Message: something went wrong please try again later,\n error: ${error}`
+      );
+    }
   };
 
   return (
