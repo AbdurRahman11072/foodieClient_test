@@ -26,66 +26,11 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
+import { MenuItem, Navbar1Props } from '@/types/navbar';
 import Link from 'next/link';
+import DropDownMenu from './dropDownMenu';
 
-interface MenuItem {
-  title: string;
-  url: string;
-  description?: string;
-  icon?: React.ReactNode;
-  items?: MenuItem[];
-}
-
-interface Navbar1Props {
-  className?: string;
-  logo?: {
-    url: string;
-    src: string;
-    alt: string;
-    title: string;
-    className?: string;
-  };
-  menu?: MenuItem[];
-  auth?: {
-    login: {
-      title: string;
-      url: string;
-    };
-    signup: {
-      title: string;
-      url: string;
-    };
-  };
-}
-
-const Navbar1 = ({
-  logo = {
-    url: 'https://www.shadcnblocks.com',
-    src: 'https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/shadcnblockscom-icon.svg',
-    alt: 'logo',
-    title: 'Shadcnblocks.com',
-  },
-  menu = [
-    { title: 'Home', url: '/' },
-    {
-      title: 'Restaurants',
-      url: 'restaurants',
-    },
-    {
-      title: 'Meals',
-      url: 'meals',
-    },
-    {
-      title: 'My Orders',
-      url: 'orders',
-    },
-  ],
-  auth = {
-    login: { title: 'Login', url: 'login' },
-    signup: { title: 'Sign up', url: 'sign-up' },
-  },
-  className,
-}: Navbar1Props) => {
+const Navbar1 = ({ logo, menu, auth, session, className }: Navbar1Props) => {
   return (
     <section className={cn('py-4 border-b shadow-sm', className)}>
       <div className="container mx-auto ">
@@ -93,33 +38,42 @@ const Navbar1 = ({
         <nav className="hidden items-center justify-between lg:flex">
           <div className="flex items-center gap-6">
             {/* Logo */}
-            <Link href={logo.url} className="flex items-center gap-2">
+            <Link
+              href={logo?.url as string}
+              className="flex items-center gap-2"
+            >
               <img
-                src={logo.src}
+                src={logo?.src}
                 className="max-h-8 dark:invert"
-                alt={logo.alt}
+                alt={logo?.alt}
               />
               <span className="text-lg font-semibold tracking-tighter">
-                {logo.title}
+                {logo?.title}
               </span>
             </Link>
           </div>
           <div className="flex items-center">
             <NavigationMenu>
               <NavigationMenuList>
-                {menu.map((item) => renderMenuItem(item))}
+                {menu?.map((item) => renderMenuItem(item))}
               </NavigationMenuList>
             </NavigationMenu>
           </div>
           <div className="flex justify-center items-center gap-4">
             <ShoppingCart />
             <AnimatedThemeToggler />
-            <Button asChild variant="outline" size="sm">
-              <a href={auth.login.url}>{auth.login.title}</a>
-            </Button>
-            <Button variant="hero2" asChild size="sm">
-              <a href={auth.signup.url}>{auth.signup.title}</a>
-            </Button>
+            {session ? (
+              <DropDownMenu image={session?.user?.image} />
+            ) : (
+              <div className="flex justify-center items-center gap-4">
+                <Button asChild variant="outline" size="sm">
+                  <a href={auth?.login.url}>{auth?.login.title}</a>
+                </Button>
+                <Button variant="hero2" asChild size="sm">
+                  <a href={auth?.signup.url}>{auth?.signup.title}</a>
+                </Button>
+              </div>
+            )}
           </div>
         </nav>
 
@@ -127,16 +81,20 @@ const Navbar1 = ({
         <div className="block lg:hidden px-2">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <a href={logo.url} className="flex items-center gap-2">
+            <Link
+              href={logo?.url as string}
+              className="flex items-center gap-2"
+            >
               <img
-                src={logo.src}
+                src={logo?.src}
                 className="max-h-8 dark:invert"
-                alt={logo.alt}
+                alt={logo?.alt}
               />
-            </a>
+            </Link>
             <div className="flex justify-center items-center gap-4">
               <ShoppingCart />
               <AnimatedThemeToggler />
+              {session && <DropDownMenu image={session?.user?.image} />}
               <Sheet>
                 <SheetTrigger asChild>
                   <Button variant="outline" size="icon">
@@ -146,13 +104,16 @@ const Navbar1 = ({
                 <SheetContent className="overflow-y-auto">
                   <SheetHeader>
                     <SheetTitle>
-                      <a href={logo.url} className="flex items-center gap-2">
+                      <Link
+                        href={logo?.url as string}
+                        className="flex items-center gap-2"
+                      >
                         <img
-                          src={logo.src}
+                          src={logo?.src}
                           className="max-h-8 dark:invert"
-                          alt={logo.alt}
+                          alt={logo?.alt}
                         />
-                      </a>
+                      </Link>
                     </SheetTitle>
                   </SheetHeader>
                   <div className="flex flex-col gap-6 p-4">
@@ -161,15 +122,19 @@ const Navbar1 = ({
                       collapsible
                       className="flex w-full flex-col gap-4"
                     >
-                      {menu.map((item) => renderMobileMenuItem(item))}
+                      {menu?.map((item) => renderMobileMenuItem(item))}
                     </Accordion>
 
                     <div className="flex flex-col gap-3">
                       <Button asChild variant="outline">
-                        <a href={auth.login.url}>{auth.login.title}</a>
+                        <Link href={auth?.login.url as string}>
+                          {auth?.login.title}
+                        </Link>
                       </Button>
                       <Button asChild>
-                        <a href={auth.signup.url}>{auth.signup.title}</a>
+                        <Link href={auth?.signup.url as string}>
+                          {auth?.signup.title}
+                        </Link>
                       </Button>
                     </div>
                   </div>
@@ -228,15 +193,15 @@ const renderMobileMenuItem = (item: MenuItem) => {
   }
 
   return (
-    <a key={item.title} href={item.url} className="text-md font-semibold">
+    <Link key={item.title} href={item.url} className="text-md font-semibold">
       {item.title}
-    </a>
+    </Link>
   );
 };
 
 const SubMenuLink = ({ item }: { item: MenuItem }) => {
   return (
-    <a
+    <Link
       className="flex min-w-80 flex-row gap-4 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none hover:bg-muted hover:text-accent-foreground"
       href={item.url}
     >
@@ -249,7 +214,7 @@ const SubMenuLink = ({ item }: { item: MenuItem }) => {
           </p>
         )}
       </div>
-    </a>
+    </Link>
   );
 };
 
