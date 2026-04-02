@@ -14,62 +14,82 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from '@/components/ui/input-group';
+import { env } from '@/env';
+import { authClient } from '@/lib/auth-client';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import z from 'zod';
 
-const formSchema = z.object({
-  email: z.string(),
-  password: z
-    .string()
-    .min(8, 'Password must be at least 8 characters')
-    .max(32, 'Password must be at most 32 characters')
-    .regex(
-      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).+$/,
-      'Must contain one capital letter, one small letter and a number'
-    ),
-});
+const formSchema = z
+  .object({
+    name: z.string(),
+    email: z.string(),
+    password: z
+      .string()
+      .min(8, 'Password must be at least 8 characters')
+      .max(32, 'Password must be at most 32 characters')
+      .regex(
+        /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).+$/,
+        'Must contain one capital letter, one small letter and a number'
+      ),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Password doesn't match",
+    path: ['confirmPassword'],
+  });
 
-const Login = () => {
+export type signupDataType = z.infer<typeof formSchema>;
+
+const SignUp = () => {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      name: '',
       email: '',
       password: '',
+      confirmPassword: '',
     },
   });
   const [isPassword, setIsPassword] = useState(false);
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    const formData = JSON.stringify(data);
-
+  const onSubmit = async (formData: z.infer<typeof formSchema>) => {
     // console.log(process.env.NEXT_PUBLIC_BACKEND_BATTER_AUTH_URL);
 
+    const toastId = toast.loading('Creating user');
+    const { name, email, password } = formData;
+
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_BATTER_AUTH_URL}sign-in/email`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: formData,
-        }
-      );
-      if (!res.ok) {
-        toast.error(`Message: something went wrong please try again later`);
+      const { data, error } = await authClient.signUp.email({
+        name,
+        email,
+        password,
+      });
+
+      if (error) {
+        toast.error(error.message, { id: toastId });
       }
-      toast.success(`Login successfull`);
+      toast.success('user created successfully', { id: toastId });
+      router.push('/');
     } catch (error) {
-      toast.error(
-        `Message: something went wrong please try again later,\n error: ${error}`
-      );
+      toast.error('Something went wrong. Please try again later', {
+        id: toastId,
+      });
     }
+  };
+
+  const handlerGoogleLogin = async () => {
+    await authClient.signIn.social({
+      provider: 'google',
+      callbackURL: `${env.NEXT_PUBLIC_APP_URL}`,
+    });
   };
 
   return (
@@ -77,7 +97,10 @@ const Login = () => {
       <Card className="w-96">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">
-            Login to <span className="text-primary">Foodie</span>
+            Create new account in
+          </CardTitle>
+          <CardTitle className="text-2xl font bold text-primary">
+            Foodie
           </CardTitle>
           <CardDescription>And enjoy your favourite food</CardDescription>
         </CardHeader>
@@ -88,6 +111,26 @@ const Login = () => {
             onSubmit={form.handleSubmit(onSubmit)}
           >
             <Controller
+              name="name"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="name">Name</FieldLabel>
+                  <Input
+                    id="name"
+                    type="name"
+                    placeholder="Enter your Name"
+                    required
+                    {...field}
+                    aria-invalid={fieldState.invalid}
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+            <Controller
               name="email"
               control={form.control}
               render={({ field, fieldState }) => (
@@ -96,7 +139,7 @@ const Login = () => {
                   <Input
                     id="email"
                     type="email"
-                    placeholder="Enter email"
+                    placeholder="Enter your email"
                     required
                     {...field}
                     aria-invalid={fieldState.invalid}
@@ -141,6 +184,40 @@ const Login = () => {
                 </Field>
               )}
             />
+            <Controller
+              name="confirmPassword"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invaild={fieldState.invalid}>
+                  <FieldLabel htmlFor="confirmPassword">Password</FieldLabel>
+                  <InputGroup>
+                    <InputGroupInput
+                      id="confirmPassword"
+                      type={isPassword ? 'text' : 'password'}
+                      placeholder="Confirm your password"
+                      required
+                      {...field}
+                    />
+                    <InputGroupAddon align="inline-end">
+                      {isPassword ? (
+                        <EyeIcon
+                          onClick={() => setIsPassword(!isPassword)}
+                          className="cursor-pointer"
+                        />
+                      ) : (
+                        <EyeOffIcon
+                          onClick={() => setIsPassword(!isPassword)}
+                          className="cursor-pointer"
+                        />
+                      )}
+                    </InputGroupAddon>
+                  </InputGroup>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
             <Button className="w-full text-white">Sign In</Button>
           </form>
           <div>
@@ -152,8 +229,12 @@ const Login = () => {
               <hr className="border-dashed" />
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <Button type="button" variant="outline">
+            <div className="grid grid-cols-1 gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => handlerGoogleLogin()}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="0.98em"
@@ -179,7 +260,7 @@ const Login = () => {
                 </svg>
                 <span>Google</span>
               </Button>
-              <Button type="button" variant="outline">
+              {/* <Button type="button" variant="outline">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="1em"
@@ -198,7 +279,7 @@ const Login = () => {
                   ></path>
                 </svg>
                 <span>Microsoft</span>
-              </Button>
+              </Button> */}
             </div>
           </div>
 
@@ -216,4 +297,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignUp;
