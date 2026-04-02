@@ -1,5 +1,6 @@
 import { ThemeProvider } from '@/components/providers/theme-provide';
 import { Toaster } from '@/components/ui/sonner';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono, Inter } from 'next/font/google';
@@ -42,7 +43,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <ThemeProvider attribute="class" defaultTheme="dark">
-          {children}
+          <TooltipProvider>{children}</TooltipProvider>
         </ThemeProvider>
         <Toaster position="top-right" />
       </body>

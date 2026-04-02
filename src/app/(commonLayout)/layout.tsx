@@ -4,7 +4,6 @@ import { userSerivce } from '@/services/user.service';
 
 const commonLayout = async ({ children }: { children: React.ReactNode }) => {
   const session = await userSerivce.getUserSession();
-  console.log(session);
 
   return (
     <main>
