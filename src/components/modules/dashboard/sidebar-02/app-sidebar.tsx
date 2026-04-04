@@ -1,8 +1,8 @@
 'use client';
 
-import { Logo } from '@/components/sidebar-02/logo';
-import DashboardNavigation from '@/components/sidebar-02/nav-main';
-import { NotificationsPopover } from '@/components/sidebar-02/nav-notifications';
+import { Logo } from '@/components/modules/dashboard/sidebar-02/logo';
+import DashboardNavigation from '@/components/modules/dashboard/sidebar-02/nav-main';
+import { NotificationsPopover } from '@/components/modules/dashboard/sidebar-02/nav-notifications';
 import {
   Sidebar,
   SidebarContent,

@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+} from '@/components/ui/collapsible';
 import {
   SidebarMenu,
   SidebarMenuButton,
@@ -13,12 +13,12 @@ import {
   SidebarMenuSubButton,
   SidebarMenuItem as SidebarMenuSubItem,
   useSidebar,
-} from "@/components/ui/sidebar";
-import { cn } from "@/lib/utils";
-import { ChevronDown, ChevronUp } from "lucide-react";
-import Link from "next/link";
-import type React from "react";
-import { useState } from "react";
+} from '@/components/ui/sidebar';
+import { cn } from '@/lib/utils';
+import { ChevronDown, ChevronUp } from 'lucide-react';
+import Link from 'next/link';
+import type React from 'react';
+import { useState } from 'react';
 
 export type Route = {
   id: string;
@@ -34,7 +34,7 @@ export type Route = {
 
 export default function DashboardNavigation({ routes }: { routes: Route[] }) {
   const { state } = useSidebar();
-  const isCollapsed = state === "collapsed";
+  const isCollapsed = state === 'collapsed';
   const [openCollapsible, setOpenCollapsible] = useState<string | null>(null);
 
   return (
@@ -56,11 +56,11 @@ export default function DashboardNavigation({ routes }: { routes: Route[] }) {
                 <CollapsibleTrigger asChild>
                   <SidebarMenuButton
                     className={cn(
-                      "flex w-full items-center rounded-lg px-2 transition-colors",
+                      'flex w-full items-center rounded-lg px-2 transition-colors hover:bg-primany',
                       isOpen
-                        ? "bg-sidebar-muted text-foreground"
-                        : "text-muted-foreground hover:bg-sidebar-muted hover:text-foreground",
-                      isCollapsed && "justify-center"
+                        ? 'bg-red text-foreground'
+                        : 'text-muted-foreground hover:bg-primary hover:text-white ',
+                      isCollapsed && 'justify-center'
                     )}
                   >
                     {route.icon}
@@ -93,7 +93,7 @@ export default function DashboardNavigation({ routes }: { routes: Route[] }) {
                             <Link
                               href={subRoute.link}
                               prefetch={true}
-                              className="flex items-center rounded-md px-4 py-1.5 text-sm font-medium text-muted-foreground hover:bg-sidebar-muted hover:text-foreground"
+                              className="flex items-center rounded-md px-4 py-1.5 text-sm font-medium text-muted-foreground hover:bg-primary hover:text-foreground"
                             >
                               {subRoute.title}
                             </Link>
@@ -110,8 +110,8 @@ export default function DashboardNavigation({ routes }: { routes: Route[] }) {
                   href={route.link}
                   prefetch={true}
                   className={cn(
-                    "flex items-center rounded-lg px-2 transition-colors text-muted-foreground hover:bg-sidebar-muted hover:text-foreground",
-                    isCollapsed && "justify-center"
+                    'flex items-center rounded-lg px-2 transition-colors text-muted-foreground hover:bg-primary hover:text-foreground',
+                    isCollapsed && 'justify-center'
                   )}
                 >
                   {route.icon}

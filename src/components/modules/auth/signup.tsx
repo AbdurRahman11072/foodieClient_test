@@ -93,7 +93,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="h-[90vh] flex justify-center items-center">
+    <div className=" flex justify-center items-center py-10">
       <Card className="w-96">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">

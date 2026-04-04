@@ -1,4 +1,4 @@
-import { DashboardSidebar } from '@/components/sidebar-02/app-sidebar';
+import { DashboardSidebar } from '@/components/modules/dashboard/sidebar-02/app-sidebar';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { userSerivce } from '@/services/user.service';
 import AdminDashboard from './@admin/dashboard/page';
