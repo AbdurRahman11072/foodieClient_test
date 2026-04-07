@@ -132,7 +132,7 @@ export function AppSidebar({ session }: { session: SessionData | null }) {
         icon: ClipboardList,
         href: '#',
         submenu: [
-          { title: 'All Products', href: '/dashboard/all-products' },
+          { title: 'All Products', href: '/dashboard/category' },
 
           { title: 'Add Products', href: '/dashboard/add-products' },
         ],
