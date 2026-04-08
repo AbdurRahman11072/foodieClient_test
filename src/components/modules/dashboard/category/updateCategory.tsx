@@ -1,6 +1,6 @@
 'use client';
 
-import { CreateCategoryAction } from '@/actions/category';
+import { UpdateCategoryAction } from '@/actions/category';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -19,33 +19,53 @@ import {
 import { Input } from '@/components/ui/input';
 import { env } from '@/env';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { PlusIcon, UploadIcon } from 'lucide-react';
+import { PencilIcon, UploadIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import z from 'zod';
 
-const categoryScheam = z.object({
+const categorySchema = z.object({
   name: z.string().min(1, 'Name is required'),
-  coverImg: z.instanceof(File).refine((file) => file instanceof File, {
-    message: `Cover image is required`,
-  }),
+  coverImg: z
+    .union([z.instanceof(File), z.string().url()])
+    .optional()
+    .refine((val) => val !== undefined && val !== null, {
+      message: 'Cover image is required',
+    }),
 });
 
-const AddCategory = () => {
+const UpdateCategory = ({
+  category,
+}: {
+  category: { id: string; name: string; coverImg: string };
+}) => {
   const router = useRouter();
-  const [previewUrl, setPreviewUrl] = useState<string>('');
+  const [previewUrl, setPreviewUrl] = useState<string>(category.coverImg);
   const [open, setOpen] = useState(false);
-  const [isLoading, setIsLoding] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isImageChanged, setIsImageChanged] = useState(false);
 
-  const form = useForm<z.infer<typeof categoryScheam>>({
-    resolver: zodResolver(categoryScheam),
+  const form = useForm<z.infer<typeof categorySchema>>({
+    resolver: zodResolver(categorySchema),
     defaultValues: {
-      name: '',
-      coverImg: undefined,
+      name: category.name,
+      coverImg: category.coverImg,
     },
   });
+
+  // Reset form when dialog opens
+  useEffect(() => {
+    if (open) {
+      form.reset({
+        name: category.name,
+        coverImg: category.coverImg,
+      });
+      setPreviewUrl(category.coverImg);
+      setIsImageChanged(false);
+    }
+  }, [open, category, form]);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -53,75 +73,85 @@ const AddCategory = () => {
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
       form.setValue('coverImg', file);
+      setIsImageChanged(true);
     }
   };
 
-  const onSubmit = async (formData: z.infer<typeof categoryScheam>) => {
-    setIsLoding(true);
-    const toastId = toast.loading('Uploading category details');
+  const onSubmit = async (formData: z.infer<typeof categorySchema>) => {
+    setIsLoading(true);
+    const toastId = toast.loading('Updating category details');
 
     try {
-      const imageFile = new FormData();
+      let coverImgUrl = formData.coverImg;
 
-      imageFile.append('coverImg', formData.coverImg);
+      // Only upload image if it was changed
+      if (isImageChanged && formData.coverImg instanceof File) {
+        const imageFile = new FormData();
+        imageFile.append('coverImg', formData.coverImg);
 
-      const imageUrl = await fetch(
-        `${env.NEXT_PUBLIC_BACKEND_API_URL}upload-image`,
-        {
-          method: 'POST',
-          body: imageFile,
-        }
-      );
-      const imgData = await imageUrl.json();
-      console.log(imgData?.data);
+        const imageUrl = await fetch(
+          `${env.NEXT_PUBLIC_BACKEND_API_URL}upload-image`,
+          {
+            method: 'POST',
+            body: imageFile,
+          }
+        );
+        const imgData = await imageUrl.json();
+        coverImgUrl = imgData?.data;
+        console.log(coverImgUrl);
+      }
 
       const data = {
-        name: formData.name,
-        coverImg: imgData?.data,
+        name: formData.name as string,
+        coverImg:
+          typeof coverImgUrl === 'string' ? coverImgUrl : String(coverImgUrl),
       };
 
-      const res = await CreateCategoryAction(data);
-      console.log(res, data);
+      const res = await UpdateCategoryAction(category.id as string, data);
 
       if (!res.success) {
         return toast.error(res.message, { id: toastId });
       }
 
-      // Close dialog and reset form on success
-      // router.refresh();
       setOpen(false);
-      form.reset();
-      setPreviewUrl('');
-      toast.success('Category added successfully', { id: toastId });
+      router.refresh();
+      toast.success('Category updated successfully', { id: toastId });
     } catch (error) {
-      toast.error('Error creating category', { id: toastId });
+      toast.error('Error updating category', { id: toastId });
     } finally {
-      setIsLoding(false);
+      setIsLoading(false);
     }
   };
 
   const handleCancel = () => {
     setOpen(false);
     form.reset();
-    setPreviewUrl('');
+    setPreviewUrl(category.coverImg);
+    setIsImageChanged(false);
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="flex justify-center items-center text-white font-semibold">
-          <PlusIcon />
-          Add Category
-        </Button>
+        <button
+          className="p-2 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm
+                    shadow-sm border border-gray-200 dark:border-gray-700
+                    transition-all duration-200
+                    hover:bg-primary hover:text-white hover:border-primary
+                    transform group-hover:scale-100 scale-90"
+          aria-label="Edit category"
+        >
+          <PencilIcon className="w-4 h-4" />
+        </button>
       </DialogTrigger>
       <DialogContent>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <DialogHeader>
             <DialogTitle className="text-xl font-bold pb-2">
-              Add Category
+              Update Category
             </DialogTitle>
             <DialogDescription className="hidden">
-              Add the food category
+              Update the food category details
             </DialogDescription>
           </DialogHeader>
           <FieldGroup>
@@ -151,7 +181,9 @@ const AddCategory = () => {
                             className="max-h-32 mx-auto object-contain"
                           />
                           <p className="text-sm text-gray-500">
-                            Click to change image
+                            {isImageChanged
+                              ? 'Click to change image'
+                              : 'Click to upload new image'}
                           </p>
                         </div>
                       ) : (
@@ -197,9 +229,9 @@ const AddCategory = () => {
               Cancel
             </Button>
             {isLoading ? (
-              <Button disabled>Uploading...</Button>
+              <Button disabled>Updating...</Button>
             ) : (
-              <Button type="submit">Add Category</Button>
+              <Button type="submit">Update Category</Button>
             )}
           </div>
         </form>
@@ -208,4 +240,4 @@ const AddCategory = () => {
   );
 };
 
-export default AddCategory;
+export default UpdateCategory;
