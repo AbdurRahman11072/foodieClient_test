@@ -19,8 +19,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { env } from '@/env';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { PlusIcon, UploadIcon } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { PlusCircle, UploadIcon } from 'lucide-react';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -34,7 +33,6 @@ const categoryScheam = z.object({
 });
 
 const AddCategory = () => {
-  const router = useRouter();
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoding] = useState(false);
@@ -110,7 +108,7 @@ const AddCategory = () => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="flex justify-center items-center text-white font-semibold">
-          <PlusIcon />
+          <PlusCircle />
           Add Category
         </Button>
       </DialogTrigger>

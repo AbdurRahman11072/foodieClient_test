@@ -17,6 +17,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'imgs.search.brave.com', // 👈 add this
       },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com', // 👈 add this
+      },
     ],
   },
   allowedDevOrigins: ['192.168.0.103'],

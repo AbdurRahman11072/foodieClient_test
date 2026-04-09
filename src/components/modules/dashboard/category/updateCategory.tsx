@@ -20,7 +20,6 @@ import { Input } from '@/components/ui/input';
 import { env } from '@/env';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PencilIcon, UploadIcon } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -41,7 +40,6 @@ const UpdateCategory = ({
 }: {
   category: { id: string; name: string; coverImg: string };
 }) => {
-  const router = useRouter();
   const [previewUrl, setPreviewUrl] = useState<string>(category.coverImg);
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -114,7 +112,7 @@ const UpdateCategory = ({
       }
 
       setOpen(false);
-      router.refresh();
+
       toast.success('Category updated successfully', { id: toastId });
     } catch (error) {
       toast.error('Error updating category', { id: toastId });

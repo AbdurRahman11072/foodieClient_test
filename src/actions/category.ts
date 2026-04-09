@@ -3,7 +3,7 @@ import { env } from '@/env';
 import { updateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 
-export const CreateCategoryAction = async (data: {
+export const CreateCategoryAction = async (category: {
   name: string;
   coverImg: string;
 }) => {
@@ -17,16 +17,16 @@ export const CreateCategoryAction = async (data: {
         Cookie: cookieStore.toString(),
       },
 
-      body: JSON.stringify(data),
+      body: JSON.stringify(category),
     });
 
-    const resData = await res.json();
-    if (!resData.success) {
-      return resData;
+    const data = await res.json();
+    if (!data.success) {
+      return data;
     }
 
     updateTag('AllCategory');
-    return resData;
+    return data;
   } catch (error) {
     return {
       success: false,
@@ -70,7 +70,7 @@ export const DeleteCategoryAction = async (id: string) => {
 };
 export const UpdateCategoryAction = async (
   id: string,
-  data: { name: string; coverImg: string }
+  cagtegory: { name: string; coverImg: string }
 ) => {
   try {
     const cookieStore = await cookies();
@@ -83,18 +83,18 @@ export const UpdateCategoryAction = async (
           'Content-Type': 'application/json',
           Cookie: cookieStore.toString(),
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(cagtegory),
       }
     );
 
-    const resData = await res.json();
+    const data = await res.json();
 
-    if (!resData.success) {
-      return resData;
+    if (!data.success) {
+      return data;
     }
 
     updateTag('AllCategory');
-    return resData;
+    return data;
   } catch (error) {
     return {
       success: false,

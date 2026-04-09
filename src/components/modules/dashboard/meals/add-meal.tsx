@@ -1,12 +1,16 @@
 'use client';
 
+// Assuming you have this action
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { env } from '@/env';
+import { categoryService } from '@/services/category.service';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { PlusCircle } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -16,13 +20,17 @@ import * as z from 'zod';
 // Schema from the meal data
 const mealSchema = z.object({
   name: z.string().min(1, 'Name is required'),
-  coverImg: z.string().url('Invalid image URL'),
+  coverImg: z
+    .union([z.instanceof(File), z.string().url()])
+    .optional()
+    .refine((val) => val !== undefined && val !== null, {
+      message: 'Cover image is required',
+    }),
   description: z.string().min(1, 'Description is required'),
   price: z.number().positive('Price must be positive'),
-  rating: z.number().min(0).max(5, 'Rating must be 0-5').default(0),
-  available: z.boolean().default(true),
+  rating: z.number().min(0).max(5, 'Rating must be 0-5'),
+  available: z.boolean(),
   ingredients: z.array(z.string()).min(1, 'At least one ingredient required'),
-  allergens: z.string().optional(),
   calories: z.number().positive('Calories must be positive'),
   servingSize: z.string().min(1, 'Serving size required'),
   categories: z.array(z.string()).min(1, 'Select at least one category'),
@@ -33,12 +41,15 @@ type MealFormData = z.infer<typeof mealSchema>;
 interface Category {
   id: string;
   name: string;
+  coverImg: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export default function AddProductPage() {
+export default function AddMealForm() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [coverImage, setCoverImage] = useState<string>('');
+  const [coverImagePreview, setCoverImagePreview] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -47,18 +58,20 @@ export default function AddProductPage() {
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
   } = useForm<MealFormData>({
     resolver: zodResolver(mealSchema),
     defaultValues: {
       name: '',
-      coverImg: '',
+      coverImg: undefined,
       description: '',
       price: 0,
-      rating: 0,
-      available: true,
+      rating: 0, // This is fine
+      available: true, // This is fine
       ingredients: [],
-      categories: [],
       calories: 0,
+      servingSize: '',
+      categories: [],
     },
   });
 
@@ -66,9 +79,9 @@ export default function AddProductPage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch('/api/categories');
-        const data = await response.json();
-        setCategories(data);
+        const response = await categoryService.getAllCategory();
+
+        setCategories(response);
       } catch (error) {
         toast.error('Failed to fetch categories');
       }
@@ -79,38 +92,89 @@ export default function AddProductPage() {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setCoverImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      const url = URL.createObjectURL(file);
+      setCoverImagePreview(url);
+      setValue('coverImg', file);
     }
   };
 
   const handleCategoryToggle = (categoryId: string) => {
-    setSelectedCategories((prev) =>
-      prev.includes(categoryId)
+    setSelectedCategories((prev) => {
+      const newSelection = prev.includes(categoryId)
         ? prev.filter((id) => id !== categoryId)
-        : [...prev, categoryId]
-    );
+        : [...prev, categoryId];
+
+      // Update form value
+      setValue('categories', newSelection);
+      return newSelection;
+    });
   };
 
   const handleRemoveCategory = (categoryId: string) => {
-    setSelectedCategories((prev) => prev.filter((id) => id !== categoryId));
+    setSelectedCategories((prev) => {
+      const newSelection = prev.filter((id) => id !== categoryId);
+      setValue('categories', newSelection);
+      return newSelection;
+    });
   };
 
   const onSubmit = async (data: MealFormData) => {
     setIsLoading(true);
+    const toastId = toast.loading('Adding product...');
+
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log('Form Data:', { ...data, categories: selectedCategories });
-      toast.success('Product added successfully!');
+      // First upload the image
+      const imageFile = new FormData();
+      imageFile.append('coverImg', data.coverImg as File);
+
+      const imageUploadResponse = await fetch(
+        `${env.NEXT_PUBLIC_BACKEND_API_URL}upload-image`,
+        {
+          method: 'POST',
+          body: imageFile,
+        }
+      );
+
+      const imageData = await imageUploadResponse.json();
+
+      if (!imageData?.data) {
+        throw new Error('Failed to upload image');
+      }
+
+      // Prepare product data
+      const mealData = {
+        name: data.name,
+        coverImg: imageData.data,
+        description: data.description,
+        price: data.price,
+        rating: data.rating,
+        available: data.available,
+        ingredients: data.ingredients,
+        calories: data.calories,
+        servingSize: data.servingSize,
+        categories: selectedCategories,
+      };
+
+      console.log(mealData);
+
+      // Submit product data
+      // const result = await CreateMealAction(productData); // Assuming you have this action
+
+      // if (!result.success) {
+      //   throw new Error(result.message || 'Failed to add product');
+      // }
+
+      toast.success('Product added successfully!', { id: toastId });
+
+      // Reset form
       reset();
       setSelectedCategories([]);
-      setCoverImage('');
+      setCoverImagePreview('');
     } catch (error) {
-      toast.error('Failed to add product');
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to add product',
+        { id: toastId }
+      );
     } finally {
       setIsLoading(false);
     }
@@ -119,6 +183,14 @@ export default function AddProductPage() {
   const selectedCategoryNames = selectedCategories
     .map((id) => categories.find((c) => c.id === id)?.name)
     .filter(Boolean);
+
+  // Transform ingredients string to array
+  const transformIngredients = (ingredientsStr: string) => {
+    return ingredientsStr
+      .split(',')
+      .map((i) => i.trim())
+      .filter((i) => i);
+  };
 
   return (
     <div className="min-h-screen bg-background p-6">
@@ -130,19 +202,37 @@ export default function AddProductPage() {
             <h1 className="text-3xl font-bold">Add New Product</h1>
           </div>
           <div className="flex gap-3">
-            <Button variant="outline" onClick={() => reset()}>
-              Save Draft
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                reset();
+                setSelectedCategories([]);
+                setCoverImagePreview('');
+              }}
+            >
+              Reset Form
             </Button>
             <Button
-              className="bg-green-500 hover:bg-green-600 text-white"
-              onClick={handleSubmit(onSubmit)}
+              type="submit"
+              form="product-form"
+              className=" text-white"
+              disabled={isLoading}
             >
-              ✓ Add Product
+              {isLoading ? (
+                'Adding Product...'
+              ) : (
+                <span className="flex justify-center items-center gap-1">
+                  <PlusCircle />
+                  Add Product
+                </span>
+              )}
             </Button>
           </div>
         </div>
 
         <form
+          id="product-form"
           onSubmit={handleSubmit(onSubmit)}
           className="grid grid-cols-1 lg:grid-cols-3 gap-8"
         >
@@ -154,134 +244,190 @@ export default function AddProductPage() {
                 General Information
               </h2>
               <div className="space-y-4">
-                <Field>
-                  <FieldLabel>Name Product</FieldLabel>
-                  <Input
-                    placeholder="Enter product name"
-                    {...register('name')}
-                  />
-                  {errors.name && (
-                    <FieldError>{errors.name.message}</FieldError>
+                <Controller
+                  name="name"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel>Product Name</FieldLabel>
+                      <Input
+                        placeholder="Enter product name"
+                        {...field}
+                        aria-invalid={fieldState.invalid}
+                      />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
                   )}
-                </Field>
+                />
 
-                <Field>
-                  <FieldLabel>Description Product</FieldLabel>
-                  <Textarea
-                    placeholder="Enter product description"
-                    rows={4}
-                    {...register('description')}
-                  />
-                  {errors.description && (
-                    <FieldError>{errors.description.message}</FieldError>
+                <Controller
+                  name="description"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel>Product Description</FieldLabel>
+                      <Textarea
+                        placeholder="Enter product description"
+                        rows={4}
+                        {...field}
+                        aria-invalid={fieldState.invalid}
+                      />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
                   )}
-                </Field>
+                />
 
-                <Field>
-                  <FieldLabel>Ingredients</FieldLabel>
-                  <Textarea
-                    placeholder="List ingredients (comma separated)"
-                    rows={3}
-                    {...register('ingredients')}
-                  />
-                  {errors.ingredients && (
-                    <FieldError>{errors.ingredients.message}</FieldError>
+                <Controller
+                  name="ingredients"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel>Ingredients</FieldLabel>
+                      <Textarea
+                        placeholder="List ingredients (comma separated)"
+                        rows={3}
+                        onChange={(e) => {
+                          const ingredientsArray = transformIngredients(
+                            e.target.value
+                          );
+                          field.onChange(ingredientsArray);
+                        }}
+                        onBlur={field.onBlur}
+                        defaultValue={field.value?.join(', ')}
+                        aria-invalid={fieldState.invalid}
+                      />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
                   )}
-                </Field>
-
-                <Field>
-                  <FieldLabel>Allergens (Optional)</FieldLabel>
-                  <Input
-                    placeholder="List any allergens"
-                    {...register('allergens')}
-                  />
-                </Field>
+                />
               </div>
             </Card>
 
             {/* Nutritional Info */}
             <Card className="p-6">
-              <h2 className="text-lg font-semibold mb-6">
+              <h2 className="text-lg font-semibold -mb-2">
                 Nutritional Information
               </h2>
               <div className="grid grid-cols-2 gap-4">
-                <Field>
-                  <FieldLabel>Calories</FieldLabel>
-                  <Input
-                    type="number"
-                    placeholder="0"
-                    {...register('calories', { valueAsNumber: true })}
-                  />
-                  {errors.calories && (
-                    <FieldError>{errors.calories.message}</FieldError>
+                <Controller
+                  name="calories"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel>Calories</FieldLabel>
+                      <Input
+                        type="number"
+                        placeholder="0"
+                        {...field}
+                        onChange={(e) =>
+                          field.onChange(parseFloat(e.target.value))
+                        }
+                        aria-invalid={fieldState.invalid}
+                      />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
                   )}
-                </Field>
+                />
 
-                <Field>
-                  <FieldLabel>Serving Size</FieldLabel>
-                  <Input
-                    placeholder="e.g., 100g"
-                    {...register('servingSize')}
-                  />
-                  {errors.servingSize && (
-                    <FieldError>{errors.servingSize.message}</FieldError>
+                <Controller
+                  name="servingSize"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel>Serving Size</FieldLabel>
+                      <Input
+                        placeholder="e.g., 100g"
+                        {...field}
+                        aria-invalid={fieldState.invalid}
+                      />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
                   )}
-                </Field>
+                />
               </div>
-            </Card>
 
-            {/* Pricing And Stock */}
-            <Card className="p-6">
-              <h2 className="text-lg font-semibold mb-6">Pricing And Stock</h2>
+              <h2 className="text-lg font-semibold -mb-2">
+                Pricing And Rating
+              </h2>
               <div className="grid grid-cols-2 gap-4">
-                <Field>
-                  <FieldLabel>Base Pricing</FieldLabel>
-                  <div className="relative">
-                    <span className="absolute left-3 top-2.5 text-gray-500">
-                      $
-                    </span>
-                    <Input
-                      type="number"
-                      placeholder="0.00"
-                      className="pl-8"
-                      {...register('price', { valueAsNumber: true })}
-                    />
-                  </div>
-                  {errors.price && (
-                    <FieldError>{errors.price.message}</FieldError>
+                <Controller
+                  name="price"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel>Base Price</FieldLabel>
+                      <div className="relative">
+                        <span className="absolute left-3 top-2.5 text-gray-500">
+                          $
+                        </span>
+                        <Input
+                          type="number"
+                          placeholder="0.00"
+                          className="pl-8"
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(parseFloat(e.target.value))
+                          }
+                          aria-invalid={fieldState.invalid}
+                        />
+                      </div>
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
                   )}
-                </Field>
+                />
 
-                <Field>
-                  <FieldLabel>Rating</FieldLabel>
-                  <Input
-                    type="number"
-                    step="0.1"
-                    min="0"
-                    max="5"
-                    placeholder="0"
-                    {...register('rating', { valueAsNumber: true })}
-                  />
-                  {errors.rating && (
-                    <FieldError>{errors.rating.message}</FieldError>
+                <Controller
+                  name="rating"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel>Rating</FieldLabel>
+                      <Input
+                        type="number"
+                        step="0.1"
+                        min="0"
+                        max="5"
+                        placeholder="0"
+                        {...field}
+                        onChange={(e) =>
+                          field.onChange(parseFloat(e.target.value))
+                        }
+                        aria-invalid={fieldState.invalid}
+                      />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
                   )}
-                </Field>
+                />
               </div>
 
               <div className="mt-4">
-                <div className="flex items-center gap-2">
-                  <Controller
-                    name="available"
-                    control={control}
-                    render={({ field }) => (
+                <Controller
+                  name="available"
+                  control={control}
+                  render={({ field }) => (
+                    <div className="flex items-center gap-2">
                       <Checkbox
                         checked={field.value}
                         onCheckedChange={field.onChange}
                       />
-                    )}
-                  />
-                  <FieldLabel>Available</FieldLabel>
-                </div>
+                      <FieldLabel>Available</FieldLabel>
+                    </div>
+                  )}
+                />
               </div>
             </Card>
           </div>
@@ -290,43 +436,54 @@ export default function AddProductPage() {
           <div className="space-y-8">
             {/* Upload Image */}
             <Card className="p-6">
-              <h2 className="text-lg font-semibold mb-4">Upload Img</h2>
+              <h2 className="text-lg font-semibold mb-4">Upload Image</h2>
               <div className="space-y-4">
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 flex flex-col items-center justify-center bg-gray-50 cursor-pointer hover:bg-gray-100 transition">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="hidden"
-                    id="image-upload"
-                  />
-                  <label
-                    htmlFor="image-upload"
-                    className="w-full h-full flex flex-col items-center justify-center cursor-pointer"
-                  >
-                    {coverImage ? (
-                      <div className="w-full">
-                        <Image
-                          src={coverImage}
-                          alt="Product preview"
-                          width={200}
-                          height={200}
-                          className="w-full h-auto rounded-lg"
+                <Controller
+                  name="coverImg"
+                  control={control}
+                  render={({ fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageUpload}
+                          className="hidden"
+                          id="image-upload"
                         />
+                        <label
+                          htmlFor="image-upload"
+                          className="cursor-pointer block"
+                        >
+                          {coverImagePreview ? (
+                            <div className="space-y-2">
+                              <Image
+                                src={coverImagePreview}
+                                alt="Preview"
+                                width={200}
+                                height={200}
+                                className="max-h-32 mx-auto object-contain"
+                              />
+                              <p className="text-sm text-gray-500">
+                                Click to change image
+                              </p>
+                            </div>
+                          ) : (
+                            <div className="space-y-2">
+                              <div className="text-4xl mb-2">📷</div>
+                              <p className="text-sm text-gray-500">
+                                Click to upload image
+                              </p>
+                            </div>
+                          )}
+                        </label>
                       </div>
-                    ) : (
-                      <>
-                        <div className="text-4xl mb-2">📷</div>
-                        <p className="text-sm text-gray-500">
-                          Click to upload image
-                        </p>
-                      </>
-                    )}
-                  </label>
-                </div>
-                {errors.coverImg && (
-                  <FieldError>{errors.coverImg.message}</FieldError>
-                )}
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
               </div>
             </Card>
 
@@ -336,11 +493,11 @@ export default function AddProductPage() {
               <div className="space-y-4">
                 {/* Selected Categories */}
                 {selectedCategoryNames.length > 0 && (
-                  <div className="space-y-2">
+                  <div className="flex flex-wrap gap-3">
                     {selectedCategoryNames.map((name, idx) => (
                       <div
                         key={selectedCategories[idx]}
-                        className="flex items-center justify-between bg-gray-100 p-3 rounded-lg"
+                        className="flex items-center justify-between bg-gray-100 dark:bg-white/5 p-3 gap-3 rounded-lg"
                       >
                         <span className="text-sm font-medium">{name}</span>
                         <button
@@ -348,7 +505,7 @@ export default function AddProductPage() {
                           onClick={() =>
                             handleRemoveCategory(selectedCategories[idx])
                           }
-                          className="text-gray-400 hover:text-gray-600"
+                          className="text-gray-400 hover:text-red-600"
                         >
                           ✕
                         </button>
@@ -387,7 +544,7 @@ export default function AddProductPage() {
                   )}
                 </div>
 
-                {selectedCategories.length === 0 && (
+                {selectedCategories.length === 0 && errors.categories && (
                   <p className="text-sm text-red-500">
                     Select at least one category
                   </p>

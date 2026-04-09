@@ -27,6 +27,7 @@ import {
 } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 import { MenuItem, Navbar1Props } from '@/types/navbar';
+import Image from 'next/image';
 import Link from 'next/link';
 import DropDownMenu from './dropDownMenu';
 
@@ -42,10 +43,12 @@ const Navbar1 = ({ logo, menu, auth, session, className }: Navbar1Props) => {
               href={logo?.url as string}
               className="flex items-center gap-2"
             >
-              <img
-                src={logo?.src}
+              <Image
+                src={logo?.src as string}
                 className="max-h-8 dark:invert"
-                alt={logo?.alt}
+                alt={logo?.alt as string}
+                width={50}
+                height={50}
               />
               <span className="text-lg font-semibold tracking-tighter">
                 {logo?.title}
@@ -63,7 +66,11 @@ const Navbar1 = ({ logo, menu, auth, session, className }: Navbar1Props) => {
             <ShoppingCart />
             <AnimatedThemeToggler />
             {session ? (
-              <DropDownMenu image={session?.user?.image} />
+              <DropDownMenu
+                name={session?.user?.name}
+                image={session?.user?.image}
+                role={session?.user?.role}
+              />
             ) : (
               <div className="flex justify-center items-center gap-4">
                 <Button asChild variant="outline" size="sm">
@@ -94,7 +101,13 @@ const Navbar1 = ({ logo, menu, auth, session, className }: Navbar1Props) => {
             <div className="flex justify-center items-center gap-4">
               <ShoppingCart />
               <AnimatedThemeToggler />
-              {session && <DropDownMenu image={session?.user?.image} />}
+              {session && (
+                <DropDownMenu
+                  name={session?.user?.name}
+                  image={session?.user?.image}
+                  role={session?.user?.role}
+                />
+              )}
               <Sheet>
                 <SheetTrigger asChild>
                   <Button variant="outline" size="icon">
