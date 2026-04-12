@@ -8,11 +8,6 @@ export const categoryService = {
 
     const data = await res.json();
 
-    if (!res.ok) {
-      return { message: data?.message };
-    }
-    console.log(data);
-
-    return data.data;
+    return data;
   },
 };

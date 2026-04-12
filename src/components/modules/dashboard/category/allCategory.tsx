@@ -16,9 +16,17 @@ type Category = {
 const AllCategory = async () => {
   const categories = await categoryService.getAllCategory();
 
+  if (!categories.success) {
+    return (
+      <div className="flex justify-center items-center text-3xl font-bold">
+        <p>No category has been added please add a new categories</p>
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-1">
-      {categories?.map((category: Category) => (
+      {categories?.data?.map((category: Category) => (
         <Card
           key={category.id}
           className="group relative flex flex-col items-center p-6  

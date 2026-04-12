@@ -17,6 +17,7 @@ import {
   StoreIcon,
 } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
@@ -68,23 +69,31 @@ const DropDownMenu = ({
         <DropdownMenuGroup>
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
 
-          <DropdownMenuItem className="text-black dark:text-white">
-            <CircleUserIcon className="text-black dark:text-white" /> Profile
-          </DropdownMenuItem>
+          <Link href="/profile">
+            <DropdownMenuItem className="text-black dark:text-white">
+              <CircleUserIcon className="text-black dark:text-white" /> Profile
+            </DropdownMenuItem>
+          </Link>
           {role === userRole.user ? (
-            <DropdownMenuItem className="text-black dark:text-white">
-              <StoreIcon className="text-black dark:text-white" /> Create
-              Restaurant
-            </DropdownMenuItem>
+            <Link href="create-restaurant">
+              <DropdownMenuItem className="text-black dark:text-white">
+                <StoreIcon className="text-black dark:text-white" /> Create
+                Restaurant
+              </DropdownMenuItem>
+            </Link>
           ) : (
-            <DropdownMenuItem className="text-black dark:text-white">
-              <LayoutDashboard className="text-black dark:text-white" />
-              Dashbaord
-            </DropdownMenuItem>
+            <Link href="/dashboard">
+              <DropdownMenuItem className="text-black dark:text-white">
+                <LayoutDashboard className="text-black dark:text-white" />
+                Dashbaord
+              </DropdownMenuItem>
+            </Link>
           )}
-          <DropdownMenuItem className="text-black dark:text-white">
-            <Settings2Icon className="text-black dark:text-white" /> Setting
-          </DropdownMenuItem>
+          <Link href="setting">
+            <DropdownMenuItem className="text-black dark:text-white">
+              <Settings2Icon className="text-black dark:text-white" /> Setting
+            </DropdownMenuItem>
+          </Link>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>

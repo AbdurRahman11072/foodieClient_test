@@ -58,8 +58,8 @@ export function AppSidebar({ session }: { session: SessionData | null }) {
       href: '#',
       submenu: [
         { title: 'All Meals', href: '/dashboard/meals' },
-        { title: 'New Meals', href: '#' },
-        { title: 'Add Meals', href: '/dashboard/add-meals' },
+
+        { title: 'Add Meals', href: '/dashboard/meals/add-meals' },
       ],
       key: 'meals',
     },
@@ -113,7 +113,7 @@ export function AppSidebar({ session }: { session: SessionData | null }) {
         href: '#',
         submenu: [
           { title: 'All Meals', href: '/dashboard/meals' },
-          { title: 'New Meals', href: '/dashboard/new-meals' },
+          { title: 'Add meals', href: '/dashboard/meals/add-meals' },
         ],
         key: 'meals',
       },
@@ -130,13 +130,7 @@ export function AppSidebar({ session }: { session: SessionData | null }) {
       {
         title: 'Catagory',
         icon: ClipboardList,
-        href: '#',
-        submenu: [
-          { title: 'All Products', href: '/dashboard/category' },
-
-          { title: 'Add Products', href: '/dashboard/add-products' },
-        ],
-        key: 'catagory',
+        href: '/dashboard/category',
       },
 
       {

@@ -9,8 +9,12 @@ export async function proxy(request: NextRequest) {
   console.log(currentPath);
 
   const role = userSession?.user.role;
+  console.log(role);
+
   const isUserAuthorized =
     role === userRole.provider || role === userRole.admin;
+
+  console.log(isUserAuthorized);
 
   if (currentPath.startsWith('/dashboard') && !isUserAuthorized) {
     return NextResponse.redirect(new URL('/login', request.url));

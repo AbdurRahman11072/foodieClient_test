@@ -12,6 +12,7 @@ export type Meal = {
   allergens: string[];
   calories: number;
   servingSize: string;
+  status: 'DRFT' | 'PUBLISHED';
   createdAt: Date;
   updatedAt: Date;
   restaurant?: {

@@ -81,7 +81,11 @@ export default function AddMealForm() {
       try {
         const response = await categoryService.getAllCategory();
 
-        setCategories(response);
+        if (!response.success) {
+          setCategories([]);
+        }
+
+        setCategories(response.data);
       } catch (error) {
         toast.error('Failed to fetch categories');
       }
@@ -516,12 +520,12 @@ export default function AddMealForm() {
 
                 {/* Category Selection */}
                 <div className="max-h-48 overflow-y-auto space-y-2 border border-gray-200 rounded-lg p-3">
-                  {categories.length === 0 ? (
+                  {categories?.length === 0 ? (
                     <p className="text-sm text-gray-500">
                       Loading categories...
                     </p>
                   ) : (
-                    categories.map((category) => (
+                    categories?.map((category) => (
                       <div
                         key={category.id}
                         className="flex items-center gap-2"

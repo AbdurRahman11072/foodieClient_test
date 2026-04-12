@@ -58,10 +58,13 @@ const Login = () => {
 
     try {
       const { data, error } = await authClient.signIn.email(formData);
+      console.log(data, error);
 
       if (error) {
-        toast.error(error.message, { id: toastId });
+        return toast.error(error.message, { id: toastId });
       }
+
+      router.refresh();
       toast.success('Login successfull', { id: toastId });
       router.push('/');
     } catch (error) {

@@ -74,7 +74,7 @@ const SignUp = () => {
       });
 
       if (error) {
-        toast.error(error.message, { id: toastId });
+        return toast.error(error.message, { id: toastId });
       }
       toast.success('user created successfully', { id: toastId });
       router.push('/');
