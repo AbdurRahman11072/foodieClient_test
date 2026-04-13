@@ -9,7 +9,6 @@ export async function proxy(request: NextRequest) {
   console.log(currentPath);
 
   const role = userSession?.user.role;
-  console.log(role);
 
   const isUserAuthorized =
     role === userRole.provider || role === userRole.admin;
@@ -28,8 +27,21 @@ export async function proxy(request: NextRequest) {
   if (userSession && currentPath.startsWith('/sign-up')) {
     return NextResponse.redirect(new URL('/', request.url));
   }
+  if (
+    currentPath.startsWith('/restaurants/create-restaurant') &&
+    userSession.user.restaurantId !== null
+  ) {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
+  }
 }
 
 export const config = {
-  matcher: ['/login', '/sign-up', '/dashboard', '/dashboard/:path*'],
+  matcher: [
+    '/restaurants',
+    '/restaurants/:path*',
+    '/login',
+    '/sign-up',
+    '/dashboard',
+    '/dashboard/:path*',
+  ],
 };

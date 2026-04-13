@@ -24,7 +24,7 @@ export const CreateRestaurntsAction = async (restaurnts: any) => {
     return {
       success: false,
       message:
-        error instanceof Error ? error.message : 'Failed to create category1',
+        error instanceof Error ? error.message : 'Failed to create restaurant',
       data: null,
     };
   }

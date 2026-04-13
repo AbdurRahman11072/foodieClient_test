@@ -1,7 +1,7 @@
+'use server';
 import { env } from '@/env';
 import { updateTag } from 'next/cache';
 import { cookies } from 'next/headers';
-('use server');
 
 export const CreateMealAction = async (meal: any) => {
   try {

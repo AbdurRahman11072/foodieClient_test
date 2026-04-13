@@ -11,6 +11,7 @@ import { restaurantSchema } from '@/schema/restaurant';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PlusCircle, Store } from 'lucide-react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -19,6 +20,7 @@ import * as z from 'zod';
 type RestaurantFormData = z.infer<typeof restaurantSchema>;
 
 export default function AddRestaurantForm({ ownerId }: { ownerId: string }) {
+  const router = useRouter();
   const [coverImagePreview, setCoverImagePreview] = useState<string>('');
   const [avatarImagePreview, setAvatarImagePreview] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
@@ -59,7 +61,7 @@ export default function AddRestaurantForm({ ownerId }: { ownerId: string }) {
       setValue('avatarImg', file);
     }
   };
-
+  console.log(ownerId);
   const onSubmit = async (data: RestaurantFormData) => {
     setIsLoading(true);
     const toastId = toast.loading('Adding restaurant...');
@@ -128,6 +130,7 @@ export default function AddRestaurantForm({ ownerId }: { ownerId: string }) {
       toast.success('Restaurant added successfully!', { id: toastId });
 
       // Reset form
+      router.push('/dashboard');
       reset();
       setCoverImagePreview('');
       setAvatarImagePreview('');
@@ -148,7 +151,7 @@ export default function AddRestaurantForm({ ownerId }: { ownerId: string }) {
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
             <div className="text-2xl">🍽️</div>
-            <h1 className="text-3xl font-bold">Add New Restaurant</h1>
+            <h1 className="text-3xl font-bold">Create New Restaurant</h1>
           </div>
           <div className="flex gap-3">
             <Button

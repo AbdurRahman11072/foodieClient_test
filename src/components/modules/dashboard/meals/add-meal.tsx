@@ -1,5 +1,6 @@
 'use client';
 
+import { CreateMealAction } from '@/actions/meal';
 // Assuming you have this action
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -28,7 +29,7 @@ const mealSchema = z.object({
     }),
   description: z.string().min(1, 'Description is required'),
   price: z.number().positive('Price must be positive'),
-  rating: z.number().min(0).max(5, 'Rating must be 0-5'),
+
   available: z.boolean(),
   ingredients: z.array(z.string()).min(1, 'At least one ingredient required'),
   calories: z.number().positive('Calories must be positive'),
@@ -46,7 +47,11 @@ interface Category {
   updatedAt: string;
 }
 
-export default function AddMealForm() {
+export default function AddMealForm({
+  restaurantId,
+}: {
+  restaurantId: string;
+}) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [coverImagePreview, setCoverImagePreview] = useState<string>('');
@@ -66,7 +71,7 @@ export default function AddMealForm() {
       coverImg: undefined,
       description: '',
       price: 0,
-      rating: 0, // This is fine
+      // This is fine
       available: true, // This is fine
       ingredients: [],
       calories: 0,
@@ -127,6 +132,8 @@ export default function AddMealForm() {
     const toastId = toast.loading('Adding product...');
 
     try {
+      console.log('this button is clicked');
+
       // First upload the image
       const imageFile = new FormData();
       imageFile.append('coverImg', data.coverImg as File);
@@ -148,10 +155,10 @@ export default function AddMealForm() {
       // Prepare product data
       const mealData = {
         name: data.name,
+        restaurantId: restaurantId,
         coverImg: imageData.data,
         description: data.description,
         price: data.price,
-        rating: data.rating,
         available: data.available,
         ingredients: data.ingredients,
         calories: data.calories,
@@ -162,11 +169,11 @@ export default function AddMealForm() {
       console.log(mealData);
 
       // Submit product data
-      // const result = await CreateMealAction(productData); // Assuming you have this action
+      const result = await CreateMealAction(mealData); // Assuming you have this action
 
-      // if (!result.success) {
-      //   throw new Error(result.message || 'Failed to add product');
-      // }
+      if (!result.success) {
+        throw new Error(result.message || 'Failed to add product');
+      }
 
       toast.success('Product added successfully!', { id: toastId });
 
@@ -385,31 +392,6 @@ export default function AddMealForm() {
                           aria-invalid={fieldState.invalid}
                         />
                       </div>
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )}
-                />
-
-                <Controller
-                  name="rating"
-                  control={control}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel>Rating</FieldLabel>
-                      <Input
-                        type="number"
-                        step="0.1"
-                        min="0"
-                        max="5"
-                        placeholder="0"
-                        {...field}
-                        onChange={(e) =>
-                          field.onChange(parseFloat(e.target.value))
-                        }
-                        aria-invalid={fieldState.invalid}
-                      />
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
                       )}

@@ -75,7 +75,7 @@ const DropDownMenu = ({
             </DropdownMenuItem>
           </Link>
           {role === userRole.user ? (
-            <Link href="create-restaurant">
+            <Link href="/restaurants/create-restaurant">
               <DropdownMenuItem className="text-black dark:text-white">
                 <StoreIcon className="text-black dark:text-white" /> Create
                 Restaurant
