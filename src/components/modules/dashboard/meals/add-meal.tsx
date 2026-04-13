@@ -13,6 +13,7 @@ import { categoryService } from '@/services/category.service';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PlusCircle } from 'lucide-react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -52,6 +53,7 @@ export default function AddMealForm({
 }: {
   restaurantId: string;
 }) {
+  const router = useRouter();
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [coverImagePreview, setCoverImagePreview] = useState<string>('');
@@ -178,6 +180,7 @@ export default function AddMealForm({
       toast.success('Product added successfully!', { id: toastId });
 
       // Reset form
+      router.push('/dashboard/meals');
       reset();
       setSelectedCategories([]);
       setCoverImagePreview('');

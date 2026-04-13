@@ -1,4 +1,3 @@
-// meals-sheet.tsx
 'use client';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -14,7 +13,6 @@ import {
 import { cn } from '@/lib/utils';
 import { Meal } from '@/types/meals';
 import {
-  AlertTriangle,
   Calendar,
   CheckCircle,
   Flame,
@@ -139,7 +137,7 @@ export function MealDetailsSheet({
 
               <Separator className="bg-border" />
 
-              {/* Categories */}
+              {/* Categories - FIXED: Changed catagory to categories */}
               <div className="py-4">
                 <div className="mb-2 flex items-center gap-2">
                   <Tag className="h-4 w-4 text-muted-foreground" />
@@ -148,7 +146,7 @@ export function MealDetailsSheet({
                   </h3>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {meal.catagory?.map((cat) => (
+                  {meal.categories?.map((cat) => (
                     <Badge
                       key={cat}
                       variant="outline"
@@ -200,32 +198,6 @@ export function MealDetailsSheet({
               </div>
 
               <Separator className="bg-border" />
-
-              {/* Allergens */}
-              {meal.allergens?.length > 0 && (
-                <>
-                  <div className="py-4">
-                    <div className="mb-2 flex items-center gap-2">
-                      <AlertTriangle className="h-4 w-4 text-amber-500" />
-                      <h3 className="text-sm font-medium text-foreground">
-                        Allergens
-                      </h3>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {meal.allergens.map((allergen) => (
-                        <Badge
-                          key={allergen}
-                          variant="outline"
-                          className="border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400"
-                        >
-                          {allergen}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                  <Separator className="bg-border" />
-                </>
-              )}
 
               {/* Timestamps */}
               <div className="py-4">

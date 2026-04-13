@@ -39,6 +39,8 @@ export function MealsTable({
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
 
+  console.log(meals);
+
   const handleViewDetails = (meal: Meal) => {
     setSelectedMeal(meal);
     setSheetOpen(true);
@@ -198,10 +200,10 @@ export function MealsTable({
                       </div>
                     </TableCell>
 
-                    {/* Category */}
+                    {/* Category - FIXED: Changed catagory to categories */}
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
-                        {meal?.catagory?.slice(0, 2).map((cat) => (
+                        {meal?.categories?.slice(0, 2).map((cat) => (
                           <Badge
                             key={cat}
                             variant="outline"
@@ -213,12 +215,12 @@ export function MealsTable({
                             {cat}
                           </Badge>
                         ))}
-                        {meal?.catagory?.length > 2 && (
+                        {meal.categories && meal.categories.length > 2 && (
                           <Badge
                             variant="outline"
                             className="border-border bg-muted px-2 py-0 text-[11px] font-normal text-muted-foreground"
                           >
-                            +{meal?.catagory?.length - 2}
+                            +{meal.categories.length - 2}
                           </Badge>
                         )}
                       </div>
@@ -247,25 +249,18 @@ export function MealsTable({
                       </div>
                     </TableCell>
 
-                    {/* Price */}
-                    {/* <TableCell className="text-right">
-                      <div className="space-y-1">
-                        <div className="font-semibold text-foreground">
-                          {formatPrice(meal?.price)}
-                        </div>
-                        {meal.discountedPrice && (
-                          <div className="text-xs text-muted-foreground line-through">
-                            {formatPrice(meal.discountedPrice)}
-                          </div>
-                        )}
+                    {/* Price - FIXED: Uncommented price display */}
+                    <TableCell className="text-right">
+                      <div className="font-semibold text-foreground">
+                        {formatPrice(meal.price)}
                       </div>
-                    </TableCell> */}
+                    </TableCell>
 
                     {/* Rating */}
                     <TableCell className="text-center">
                       <div className="flex items-center justify-center gap-1">
                         <span className="text-sm font-semibold text-foreground">
-                          {meal?.rating?.toFixed(1) || '0.0'}
+                          {meal.rating?.toFixed(1) || '0.0'}
                         </span>
                         <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
                       </div>
@@ -277,10 +272,10 @@ export function MealsTable({
                         variant="outline"
                         className={cn(
                           'px-2 py-0 text-[11px] font-medium capitalize',
-                          getStatusColor(meal?.status || 'DRFT')
+                          getStatusColor(meal.status || 'DRFT')
                         )}
                       >
-                        {meal?.status?.toLowerCase() || 'draft'}
+                        {meal.status?.toLowerCase() || 'draft'}
                       </Badge>
                     </TableCell>
 
@@ -290,12 +285,12 @@ export function MealsTable({
                         variant="outline"
                         className={cn(
                           'px-2 py-0 text-[11px] font-medium',
-                          meal?.available
+                          meal.available
                             ? 'border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400'
                             : 'border-border bg-muted text-muted-foreground'
                         )}
                       >
-                        {meal?.available ? 'Available' : 'Unavailable'}
+                        {meal.available ? 'Available' : 'Unavailable'}
                       </Badge>
                     </TableCell>
 
@@ -304,7 +299,7 @@ export function MealsTable({
                       <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground">
                         <Clock className="h-3 w-3" />
                         <span>
-                          {formatDate(meal?.updatedAt || meal?.createdAt)}
+                          {formatDate(meal.updatedAt || meal.createdAt)}
                         </span>
                       </div>
                     </TableCell>
@@ -348,17 +343,17 @@ export function MealsTable({
                           onClick={() => onToggleAvailability?.(meal)}
                           className={cn(
                             'h-8 w-8 p-0',
-                            meal?.available
+                            meal.available
                               ? 'text-muted-foreground hover:bg-destructive/10 hover:text-destructive'
                               : 'text-muted-foreground hover:bg-emerald-100 dark:hover:bg-emerald-950/30 hover:text-emerald-600 dark:hover:text-emerald-400'
                           )}
                           title={
-                            meal?.available
+                            meal.available
                               ? 'Mark Unavailable'
                               : 'Mark Available'
                           }
                         >
-                          {meal?.available ? (
+                          {meal.available ? (
                             <XCircle className="h-4 w-4" />
                           ) : (
                             <CheckCircle className="h-4 w-4" />

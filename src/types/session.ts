@@ -23,7 +23,7 @@ interface User {
   banned: boolean;
   banReason: null | string;
   banExpires: null | string;
-  hasShop: boolean;
+  restaurantId: string | null;
   id: string;
 }
 

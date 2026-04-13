@@ -6,7 +6,7 @@ export type Meal = {
   description: string;
   price: number;
   rating: number;
-  catagory: string[];
+  categories: string[];
   available: boolean;
   ingredients: string[];
   allergens: string[];

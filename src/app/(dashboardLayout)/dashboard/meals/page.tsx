@@ -6,7 +6,10 @@ import { SessionData } from '@/types/session';
 const MealsPage = async () => {
   const session: SessionData = await userSerivce.getUserSession();
 
-  const meals = await mealService.getAllMealByRestaurants(session?.user?.id);
+  const meals = await mealService.getAllMealByRestaurants(
+    session?.user?.restaurantId,
+    session.user.role
+  );
 
   return <MealsTable meals={meals} />;
 };
