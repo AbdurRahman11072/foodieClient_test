@@ -1,3 +1,4 @@
+// Update your MealsTable component
 'use client';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -26,6 +27,11 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { MealDetailsSheet } from './meals-sheet';
+import { UpdateMealSheet } from './update-meals';
+
+interface ExtendedMealsTableProps extends MealsTableProps {
+  restaurantId: string;
+}
 
 export function MealsTable({
   meals,
@@ -34,24 +40,31 @@ export function MealsTable({
   onDuplicate,
   onToggleAvailability,
   onView,
-}: MealsTableProps) {
+  restaurantId,
+}: ExtendedMealsTableProps) {
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
-  const [sheetOpen, setSheetOpen] = useState(false);
-
-  console.log(meals);
+  const [detailsSheetOpen, setDetailsSheetOpen] = useState(false);
+  const [editSheetOpen, setEditSheetOpen] = useState(false);
 
   const handleViewDetails = (meal: Meal) => {
     setSelectedMeal(meal);
-    setSheetOpen(true);
+    setDetailsSheetOpen(true);
     onView?.(meal);
   };
 
   const handleEditClick = (meal: Meal) => {
+    setSelectedMeal(meal);
+    setEditSheetOpen(true);
     onEdit?.(meal);
   };
 
-  // Helper to get category badge colors with dark mode support
+  const handleEditSuccess = () => {
+    // Refresh the meals list or trigger a refetch
+    window.location.reload(); // Or use router.refresh()
+  };
+
+  // Rest of your helper functions remain the same...
   const getCategoryColor = (category: string) => {
     const colors: Record<string, string> = {
       Breakfast:
@@ -70,7 +83,6 @@ export function MealsTable({
     return colors[category] || 'bg-muted text-muted-foreground border-border';
   };
 
-  // Get status badge color
   const getStatusColor = (status: string) => {
     const colors: Record<string, string> = {
       DRFT: 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-700',
@@ -82,7 +94,6 @@ export function MealsTable({
     return colors[status] || colors.DRFT;
   };
 
-  // Format price to USD
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -90,7 +101,6 @@ export function MealsTable({
     }).format(price);
   };
 
-  // Format date
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('en-US', {
       month: 'short',
@@ -102,8 +112,10 @@ export function MealsTable({
   return (
     <>
       <div className="w-full">
+        {/* Your existing table JSX remains exactly the same */}
         <div className="rounded-md border border-border bg-background">
           <Table>
+            {/* Table header and body remain unchanged */}
             <TableHeader>
               <TableRow className="border-b border-border bg-muted/50 hover:bg-muted/50">
                 <TableHead className="w-[60px] font-medium text-foreground">
@@ -200,22 +212,22 @@ export function MealsTable({
                       </div>
                     </TableCell>
 
-                    {/* Category - FIXED: Changed catagory to categories */}
+                    {/* Category */}
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
                         {meal?.categories?.slice(0, 2).map((cat) => (
                           <Badge
-                            key={cat}
+                            key={cat.id}
                             variant="outline"
                             className={cn(
                               'px-2 py-0 text-[11px] font-normal',
-                              getCategoryColor(cat)
+                              getCategoryColor(cat.name)
                             )}
                           >
-                            {cat}
+                            {cat.name}
                           </Badge>
                         ))}
-                        {meal.categories && meal.categories.length > 2 && (
+                        {meal?.categories && meal?.categories.length > 2 && (
                           <Badge
                             variant="outline"
                             className="border-border bg-muted px-2 py-0 text-[11px] font-normal text-muted-foreground"
@@ -249,7 +261,7 @@ export function MealsTable({
                       </div>
                     </TableCell>
 
-                    {/* Price - FIXED: Uncommented price display */}
+                    {/* Price */}
                     <TableCell className="text-right">
                       <div className="font-semibold text-foreground">
                         {formatPrice(meal.price)}
@@ -266,7 +278,7 @@ export function MealsTable({
                       </div>
                     </TableCell>
 
-                    {/* Status (DRFT/PUBLISHED/ARCHIVED) */}
+                    {/* Status */}
                     <TableCell className="text-center">
                       <Badge
                         variant="outline"
@@ -379,13 +391,25 @@ export function MealsTable({
         </div>
       </div>
 
-      {/* Details Sheet */}
+      {/* Details Sheet - View Only */}
       <MealDetailsSheet
         meal={selectedMeal}
-        open={sheetOpen}
-        onOpenChange={setSheetOpen}
-        onEdit={onEdit}
+        open={detailsSheetOpen}
+        onOpenChange={setDetailsSheetOpen}
+        onEdit={(meal) => {
+          setDetailsSheetOpen(false);
+          handleEditClick(meal);
+        }}
         onToggleAvailability={onToggleAvailability}
+      />
+
+      {/* Edit Sheet */}
+      <UpdateMealSheet
+        meal={selectedMeal}
+        open={editSheetOpen}
+        onOpenChange={setEditSheetOpen}
+        restaurantId={restaurantId}
+        onSuccess={handleEditSuccess}
       />
     </>
   );

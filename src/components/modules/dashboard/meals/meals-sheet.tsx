@@ -137,7 +137,7 @@ export function MealDetailsSheet({
 
               <Separator className="bg-border" />
 
-              {/* Categories - FIXED: Changed catagory to categories */}
+              {/* Categories - FIXED: Handle Categories objects */}
               <div className="py-4">
                 <div className="mb-2 flex items-center gap-2">
                   <Tag className="h-4 w-4 text-muted-foreground" />
@@ -148,14 +148,14 @@ export function MealDetailsSheet({
                 <div className="flex flex-wrap gap-2">
                   {meal.categories?.map((cat) => (
                     <Badge
-                      key={cat}
+                      key={cat.id}
                       variant="outline"
                       className={cn(
                         'px-2 py-1 text-xs font-normal',
-                        getCategoryColor(cat)
+                        getCategoryColor(cat.name)
                       )}
                     >
-                      {cat}
+                      {cat.name}
                     </Badge>
                   ))}
                 </div>
@@ -185,9 +185,9 @@ export function MealDetailsSheet({
                   </h3>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {meal.ingredients?.map((ingredient) => (
+                  {meal.ingredients?.map((ingredient, index) => (
                     <Badge
-                      key={ingredient}
+                      key={index}
                       variant="secondary"
                       className="bg-muted text-foreground"
                     >
@@ -196,6 +196,32 @@ export function MealDetailsSheet({
                   ))}
                 </div>
               </div>
+
+              {/* Allergens - Added since it's in the type */}
+              {meal.allergens && meal.allergens.length > 0 && (
+                <>
+                  <Separator className="bg-border" />
+                  <div className="py-4">
+                    <div className="mb-2 flex items-center gap-2">
+                      <Package className="h-4 w-4 text-muted-foreground" />
+                      <h3 className="text-sm font-medium text-foreground">
+                        Allergens
+                      </h3>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {meal.allergens.map((allergen, index) => (
+                        <Badge
+                          key={index}
+                          variant="secondary"
+                          className="bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-400"
+                        >
+                          {allergen}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
 
               <Separator className="bg-border" />
 

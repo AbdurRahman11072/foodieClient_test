@@ -1,3 +1,8 @@
+type Categories = {
+  id: string;
+  name: string;
+};
+
 export type Meal = {
   id: string;
   restaurantId: string;
@@ -6,7 +11,7 @@ export type Meal = {
   description: string;
   price: number;
   rating: number;
-  categories: string[];
+  categories: Categories[];
   available: boolean;
   ingredients: string[];
   allergens: string[];

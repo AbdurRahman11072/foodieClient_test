@@ -22,4 +22,24 @@ export const userSerivce = {
     return session;
     console.log(session);
   },
+
+  getAllUsers: async () => {
+    try {
+      const cookieStore = await cookies();
+
+      const res = await fetch(`${env.NEXT_PUBLIC_BACKEND_API_URL}users`, {
+        headers: {
+          Cookie: cookieStore.toString(),
+        },
+        cache: 'force-cache',
+      });
+      const data = await res.json();
+
+      return data;
+    } catch (error) {
+      console.log(error);
+
+      return { success: false, message: 'Something went wrong', data: null };
+    }
+  },
 };

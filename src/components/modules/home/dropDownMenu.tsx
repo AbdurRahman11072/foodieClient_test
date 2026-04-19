@@ -57,10 +57,10 @@ const DropDownMenu = ({
             alt="profile image"
             width={20}
             height={20}
-            className="w-8 h-8 bg-white rounded-full object-cover"
+            className="w-8 h-8 bg-white rounded-full object-cover cursor-pointer"
           />
         ) : (
-          <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-md">
+          <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-md cursor-pointer">
             {name?.charAt(0).toUpperCase()}
           </div>
         )}
