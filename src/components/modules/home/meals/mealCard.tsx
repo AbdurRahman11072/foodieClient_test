@@ -35,7 +35,7 @@ export function MealCard({
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
         <div className="w-full h-full bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center text-4xl overflow-hidden transition-all duration-300 ">
           <Image
-            src={image}
+            src={image as string}
             alt="CoverImg"
             width={500}
             height={500}
@@ -53,7 +53,10 @@ export function MealCard({
             </h3>
             <div className="flex flex-wrap gap-2">
               {categories?.map((category) => (
-                <p className="text-xs text-primary bg-primary/10 p-1 rounded-sm">
+                <p
+                  className="text-xs text-primary bg-primary/10 p-1 rounded-sm"
+                  key={category.id}
+                >
                   {category.name}
                 </p>
               ))}

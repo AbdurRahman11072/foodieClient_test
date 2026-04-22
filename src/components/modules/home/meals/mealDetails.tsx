@@ -62,14 +62,14 @@ const MealDetailsCard = ({ meal, session }: MealDetailsCardProps) => {
 
   const addToCart = async () => {
     const cartData = {
-      customerId: customerId,
-      restaurantId: restaurantId,
-      menuItemId: meal?.id,
-      status: 'ORDERD',
-      name: meal?.name,
-      image: meal?.coverImg,
+      restaurantId: meal.restaurant.id,
+      restaurantName: meal.restaurant.name,
+      mealId: meal?.id,
+      mealName: meal.name,
+      mealImg: meal.coverImg,
       quantity: quantity,
       price: meal?.price,
+      totalPrice: quantity * meal?.price,
     };
 
     console.log(cartData);
@@ -77,7 +77,7 @@ const MealDetailsCard = ({ meal, session }: MealDetailsCardProps) => {
     const existingCart = JSON.parse(localStorage.getItem('cart') || `[]`);
 
     const itemExist = existingCart.findIndex(
-      (item: CartItem) => item.menuItemId === meal?.id
+      (item: CartItem) => item.mealId === meal?.id
     );
 
     if (itemExist > -1) {

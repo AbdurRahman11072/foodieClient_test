@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import mealService from '@/services/meals.service';
+import { Meal } from '@/types/meals';
 import Link from 'next/link';
 import { MealCard } from './meals/mealCard';
 
@@ -26,7 +27,7 @@ const FeaturedMeals = async () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-          {allMeals.data.data.map((meal: any) => (
+          {allMeals.data.data.map((meal: Meal) => (
             <MealCard
               key={meal.id}
               id={meal.id}

@@ -1,12 +1,12 @@
 export interface CartItem {
-  customerId?: string;
   restaurantId?: string;
-  menuItemId?: string;
-  deliveryAddress?: string;
-  status?: string;
-  name?: string;
-  image?: string;
+  restaurantName?: string;
+  mealId?: string;
+  mealName?: string;
+  mealImg?: string;
   quantity: number;
   price?: number;
+  totalPrice?: number;
+  status?: string;
   // Add other properties as needed
 }
