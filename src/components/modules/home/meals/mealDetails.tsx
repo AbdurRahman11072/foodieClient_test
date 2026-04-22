@@ -2,6 +2,8 @@
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { CartItem } from '@/types/cart';
+import { SessionData } from '@/types/session';
 import {
   ArrowLeft,
   Heart,
@@ -12,7 +14,9 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface MealDetailsCardProps {
   meal: {
@@ -38,9 +42,11 @@ interface MealDetailsCardProps {
       closingTime: string;
     };
   };
+  session: SessionData | null;
 }
 
-const MealDetailsCard = ({ meal }: MealDetailsCardProps) => {
+const MealDetailsCard = ({ meal, session }: MealDetailsCardProps) => {
+  const router = useRouter();
   const [quantity, setQuantity] = useState(1);
   const [isFavorite, setIsFavorite] = useState(false);
 
@@ -49,6 +55,44 @@ const MealDetailsCard = ({ meal }: MealDetailsCardProps) => {
     const opening = meal.restaurant.openingTime;
     const closing = meal.restaurant.closingTime;
     return `${opening} - ${closing}`;
+  };
+
+  const customerId = session?.user.id;
+  const restaurantId = session?.user.restaurantId;
+
+  const addToCart = async () => {
+    const cartData = {
+      customerId: customerId,
+      restaurantId: restaurantId,
+      menuItemId: meal?.id,
+      status: 'ORDERD',
+      name: meal?.name,
+      image: meal?.coverImg,
+      quantity: quantity,
+      price: meal?.price,
+    };
+
+    console.log(cartData);
+
+    const existingCart = JSON.parse(localStorage.getItem('cart') || `[]`);
+
+    const itemExist = existingCart.findIndex(
+      (item: CartItem) => item.menuItemId === meal?.id
+    );
+
+    if (itemExist > -1) {
+      // Update quantity if item exists
+      existingCart[itemExist].quantity += quantity;
+      toast.success('Food cart has been updated with new quantity');
+      router.push('/cart');
+    } else {
+      // Add new item
+      existingCart.push(cartData);
+      toast.success('Food has been added to the cart');
+      router.push('/cart');
+    }
+
+    localStorage.setItem('cart', JSON.stringify(existingCart));
   };
 
   return (
@@ -194,10 +238,11 @@ const MealDetailsCard = ({ meal }: MealDetailsCardProps) => {
               <div className="flex gap-3">
                 <Button
                   size="lg"
-                  className="flex-1 gap-2"
+                  className="flex-1 gap-2 text-white"
                   disabled={!meal.available}
+                  onClick={() => addToCart()}
                 >
-                  <ShoppingCart className="h-5 w-5" />
+                  <ShoppingCart className="h-5 w-5 " />
                   Add to Cart
                 </Button>
                 <Button

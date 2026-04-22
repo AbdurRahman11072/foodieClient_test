@@ -35,7 +35,7 @@ const FeaturedMeals = async () => {
               price={meal.price}
               rating={meal.rating}
               image={meal.coverImg}
-              cuisine={meal.cuisine}
+              categories={meal.categories}
             />
           ))}
         </div>

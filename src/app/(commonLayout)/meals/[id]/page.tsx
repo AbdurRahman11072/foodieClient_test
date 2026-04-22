@@ -1,5 +1,6 @@
 import MealDetailsCard from '@/components/modules/home/meals/mealDetails';
 import mealService from '@/services/meals.service';
+import { userSerivce } from '@/services/user.service';
 import Link from 'next/link';
 
 const MealDetailPage = async ({
@@ -9,6 +10,7 @@ const MealDetailPage = async ({
 }) => {
   const { id } = await params;
   const mealData = await mealService.getMealDetailsById(id);
+  const session = await userSerivce.getUserSession();
 
   console.log('Meal data:', mealData);
 
@@ -30,7 +32,7 @@ const MealDetailPage = async ({
   }
 
   // Pass the meal data directly (not as array)
-  return <MealDetailsCard meal={mealData.data} />;
+  return <MealDetailsCard meal={mealData.data} session={session} />;
 };
 
 export default MealDetailPage;

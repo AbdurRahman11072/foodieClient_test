@@ -1,3 +1,4 @@
+'use client';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ShoppingCart, Star } from 'lucide-react';
@@ -50,9 +51,13 @@ export function MealCard({
             <h3 className="font-semibold text-foreground line-clamp-1">
               {name}
             </h3>
-            {categories?.map((category) => (
-              <p className="text-xs text-muted-foreground">{category.name}</p>
-            ))}
+            <div className="flex flex-wrap gap-2">
+              {categories?.map((category) => (
+                <p className="text-xs text-primary bg-primary/10 p-1 rounded-sm">
+                  {category.name}
+                </p>
+              ))}
+            </div>
           </div>
           <div className="flex items-center gap-1 bg-primary/10 px-2 py-1 rounded">
             <Star className="h-3 w-3 fill-primary text-primary" />
