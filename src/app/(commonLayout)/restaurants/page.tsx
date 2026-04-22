@@ -1,6 +1,7 @@
 // Example usage in a page
 
 import RestaurantGrid from '@/components/modules/home/restaurants/restaurantDetails';
+import restaurantService from '@/services/restaurant.service';
 
 const sampleRestaurants = [
   {
@@ -47,7 +48,11 @@ const sampleRestaurants = [
   },
 ];
 
-export default function RestaurantsPage() {
+export default async function RestaurantsPage() {
+  const restaurantData = await restaurantService.getAllMeal();
+
+  console.log(restaurantData.data);
+
   return (
     <RestaurantGrid
       restaurants={sampleRestaurants}

@@ -1,4 +1,4 @@
-type Categories = {
+export type Categories = {
   id: string;
   name: string;
 };
@@ -23,8 +23,36 @@ export type Meal = {
   restaurant?: {
     id: string;
     name: string;
+    coverImg: string;
+    rating: number;
+    openingTime: string;
+    closingTime: string;
   };
 };
+// export type MealDetails = {
+//   id: string;
+//   restaurantId: string;
+//   name: string;
+//   description: string;
+//   price: number;
+//   rating: number;
+//   cuisine: string;
+//   imageUrl: string;
+//   available: boolean;
+//   ingredients: string[];
+//   deliveryTime: string;
+//   allergens: string[];
+//   calories: number;
+//   servingSize: string;
+//   createdAt: string;
+//   updatedAt: string;
+//   resturant: {
+//     id: string;
+//     name: string;
+//     rating: number;
+//     deliveryTime: string;
+//   };
+// };
 
 export interface MealsTableProps {
   meals: Meal[] | [];

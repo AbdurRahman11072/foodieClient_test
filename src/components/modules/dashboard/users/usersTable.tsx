@@ -1,6 +1,7 @@
 // users-table.tsx
 'use client';
 
+import { UpdateUserAction } from '@/actions/users';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -17,16 +18,14 @@ import {
   Ban,
   Calendar,
   CheckCircle,
-  Eye,
   Mail,
-  Pencil,
   Shield,
   Store,
-  Trash2,
   UserCheck,
   UserX,
 } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 // User type based on actual API response
 export interface User {
@@ -71,20 +70,14 @@ export function UsersTable({
   const [detailsSheetOpen, setDetailsSheetOpen] = useState(false);
   const [editSheetOpen, setEditSheetOpen] = useState(false);
 
-  const handleViewDetails = (user: User) => {
-    setSelectedUser(user);
-    setDetailsSheetOpen(true);
-    onView?.(user);
-  };
+  const banUser = async (id: string, data: any) => {
+    const toastId = toast.loading('Updating user info......');
+    const result = await UpdateUserAction(id, data);
 
-  const handleEditClick = (user: User) => {
-    setSelectedUser(user);
-    setEditSheetOpen(true);
-    onEdit?.(user);
-  };
-
-  const handleEditSuccess = () => {
-    window.location.reload();
+    if (!result.success) {
+      toast.error(result.message, { id: toastId });
+    }
+    toast.success(result.message, { id: toastId });
   };
 
   // Get role badge colors and icon
@@ -156,8 +149,6 @@ export function UsersTable({
       .toUpperCase()
       .slice(0, 2);
   };
-
- 
 
   return (
     <>
@@ -322,31 +313,13 @@ export function UsersTable({
                       {/* Actions */}
                       <TableCell>
                         <div className="flex items-center justify-center gap-1">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleViewDetails(user)}
-                            className="h-8 w-8 p-0 text-muted-foreground hover:bg-muted hover:text-foreground"
-                            title="View Details"
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleEditClick(user)}
-                            className="h-8 w-8 p-0 text-muted-foreground hover:bg-muted hover:text-foreground"
-                            title="Edit User"
-                          >
-                            <Pencil className="h-4 w-4" />
-                          </Button>
-
                           {user.banned ? (
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => onUnban?.(user)}
+                              onClick={() =>
+                                banUser(user.id, { banned: false })
+                              }
                               className="h-8 w-8 p-0 text-muted-foreground hover:bg-emerald-100 dark:hover:bg-emerald-950/30 hover:text-emerald-600 dark:hover:text-emerald-400"
                               title="Unban User"
                             >
@@ -356,23 +329,13 @@ export function UsersTable({
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => onBan?.(user)}
+                              onClick={() => banUser(user.id, { banned: true })}
                               className="h-8 w-8 p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
                               title="Ban User"
                             >
                               <Ban className="h-4 w-4" />
                             </Button>
                           )}
-
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => onDelete?.(user)}
-                            className="h-8 w-8 p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
-                            title="Delete User"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
                         </div>
                       </TableCell>
                     </TableRow>

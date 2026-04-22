@@ -1,0 +1,101 @@
+import { categoryService } from '@/services/category.service';
+import Image from 'next/image';
+
+type Category = {
+  id: string;
+  name: string;
+  coverImg: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+const HomeCategories = async () => {
+  const categories = await categoryService.getAllCategory();
+
+  if (!categories.success) {
+    return (
+      <div className="flex justify-center items-center text-3xl font-bold">
+        <p>No category has been added please add a new categories</p>
+      </div>
+    );
+  }
+
+  return (
+    <section className="">
+      <div className="mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-10">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground">
+            Browse by Category
+          </h2>
+          <p className="text-muted-foreground mt-2">
+            Find your favorite type of food
+          </p>
+        </div>
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-1">
+        {categories?.data?.map((category: Category) => (
+          <div
+            key={category.id}
+            className="group relative flex flex-col items-center p-6  
+             rounded-2xl border-none
+            transition-all duration-300 ease-out
+            hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1
+            hover:border-primary/20 dark:hover:border-primary/30"
+          >
+            {/* Image Container */}
+            <div className="relative mb-4">
+              {/* Gradient Ring */}
+              <div
+                className="absolute -inset-1 bg-gradient-to-br from-primary/20 via-primary/10 to-transparent 
+              rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+              />
+
+              {/* Image Wrapper with Scale Effect */}
+              <div
+                className="relative w-32 h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 
+              rounded-full overflow-hidden
+              ring-4 ring-gray-100 dark:ring-gray-800 
+              group-hover:ring-primary/20 dark:group-hover:ring-primary/30
+              transition-all duration-300"
+              >
+                <Image
+                  src={category.coverImg}
+                  alt={category.name}
+                  fill
+                  className="object-cover transition-transform duration-500 
+                  group-hover:scale-110"
+                  sizes="(max-width: 768px) 128px, (max-width: 1024px) 144px, 160px"
+                  priority
+                />
+                {/* Overlay */}
+                <div
+                  className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent 
+                opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                />
+              </div>
+            </div>
+
+            {/* Category Name */}
+            <h3
+              className="text-base md:text-lg font-semibold text-gray-900 dark:text-gray-100 
+            text-center line-clamp-2 transition-colors duration-200
+            group-hover:text-primary dark:group-hover:text-primary"
+            >
+              {category.name}
+            </h3>
+
+            {/* Decorative Line */}
+            <div
+              className="absolute bottom-4 left-1/2 -translate-x-1/2 w-12 h-0.5 
+            bg-gradient-to-r from-transparent via-primary/30 to-transparent
+            opacity-0 group-hover:opacity-100 transition-all duration-300
+            group-hover:w-16"
+            />
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+};
+
+export default HomeCategories;

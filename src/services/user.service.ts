@@ -31,7 +31,7 @@ export const userSerivce = {
         headers: {
           Cookie: cookieStore.toString(),
         },
-        cache: 'force-cache',
+        next: { tags: ['AllUsers'] },
       });
       const data = await res.json();
 
