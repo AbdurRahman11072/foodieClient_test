@@ -51,8 +51,6 @@ const mealService = {
 
     const queryString = params.toString();
 
-    console.log(queryString);
-
     const url = `${env.NEXT_PUBLIC_BACKEND_API_URL}meals${queryString ? `?${queryString}` : ''}`;
 
     const res = await fetch(url);

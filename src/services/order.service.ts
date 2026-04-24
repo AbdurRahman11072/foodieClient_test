@@ -8,7 +8,7 @@ const orderService = {
       headers: {
         Cookie: cookieStore.toString(),
       },
-      next: { tags: ['AllCategory'] },
+      next: { tags: ['AllOrders'] },
     });
 
     const data = await res.json();

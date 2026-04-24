@@ -63,7 +63,9 @@ const Navbar1 = ({ logo, menu, auth, session, className }: Navbar1Props) => {
             </NavigationMenu>
           </div>
           <div className="flex justify-center items-center gap-4">
-            <ShoppingCart />
+            <Link href="/cart">
+              <ShoppingCart />
+            </Link>
             <AnimatedThemeToggler />
             {session ? (
               <DropDownMenu

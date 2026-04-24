@@ -1,24 +1,26 @@
-import { EmptyOrdersState } from '@/components/modules/home/orders/emptyOrder';
-import { OrderCard } from '@/components/modules/home/orders/orderCard';
-import orderService from '@/services/order.service';
-import { userSerivce } from '@/services/user.service';
+// components/modules/home/orders/mainOrder.tsx
+'use client';
+
 import { Order } from '@/types/order';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { OrderCard } from './orderCard';
 
-// Status configuration using CSS variables
+interface MainOrderProps {
+  session: any;
+  orders: Order[];
+}
 
-const OrderPage = async () => {
-  const session = await userSerivce.getUserSession();
+export default function MainOrder({
+  session,
+  orders: initialOrders,
+}: MainOrderProps) {
+  const [orders, setOrders] = useState<Order[]>(initialOrders);
 
-  const response = await orderService.getAllOrderByUserId(session.user.id);
-  const orders: Order[] = response?.data || [];
-
-  if (orders.length === 0) {
-    return <EmptyOrdersState />;
-  }
+  const router = useRouter();
 
   return (
     <main className="min-h-screen bg-background">
-      {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 border-b border-border py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">
@@ -29,10 +31,9 @@ const OrderPage = async () => {
           </p>
         </div>
       </div>
-
       <div className="flex-1 py-8 md:py-12">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div className="space-y-6 ">
+          <div className="space-y-6">
             {orders.map((order) => (
               <OrderCard key={order.id} order={order} />
             ))}
@@ -41,6 +42,4 @@ const OrderPage = async () => {
       </div>
     </main>
   );
-};
-
-export default OrderPage;
+}
