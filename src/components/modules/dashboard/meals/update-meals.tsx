@@ -595,7 +595,7 @@ export function UpdateMealSheet({
                   </Button>
                   <Button
                     type="submit"
-                    className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90"
+                    className="flex-1 bg-primary  hover:bg-primary/90 text-white"
                     disabled={isLoading || (!isDirty && !isImageChanged)}
                   >
                     {isLoading ? (
