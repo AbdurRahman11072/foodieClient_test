@@ -51,8 +51,6 @@ const sampleRestaurants = [
 export default async function RestaurantsPage() {
   const restaurantData = await restaurantService.getAllMeal();
 
-  console.log(restaurantData.data);
-
   return (
     <RestaurantGrid
       restaurants={sampleRestaurants}

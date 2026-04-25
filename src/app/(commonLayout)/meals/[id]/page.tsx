@@ -12,8 +12,6 @@ const MealDetailPage = async ({
   const mealData = await mealService.getMealDetailsById(id);
   const session = await userSerivce.getUserSession();
 
-  console.log('Meal data:', mealData);
-
   // Check if data exists (different structure than before)
   if (!mealData?.data || mealData.data.length === 0) {
     return (

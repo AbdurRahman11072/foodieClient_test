@@ -12,8 +12,6 @@ type Category = {
 const HomeCategories = async () => {
   const categories = await categoryService.getAllCategory();
 
-  console.log(categories);
-
   if (!categories.success) {
     return (
       <div className="mx-auto px-4 sm:px-6 lg:px-8">

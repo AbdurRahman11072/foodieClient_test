@@ -1,3 +1,4 @@
+// app/(dashboard)/dashboard/meals/page.tsx
 import { MealsTable } from '@/components/modules/dashboard/meals/meals-table';
 import mealService from '@/services/meals.service';
 import { userSerivce } from '@/services/user.service';
@@ -11,7 +12,12 @@ const MealsPage = async () => {
     session.user.role
   );
 
-  return <MealsTable meals={meals} />;
+  return (
+    <MealsTable
+      meals={meals.data}
+      restaurantId={session?.user?.restaurantId as string}
+    />
+  );
 };
 
 export default MealsPage;

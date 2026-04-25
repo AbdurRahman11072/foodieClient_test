@@ -96,7 +96,6 @@ const UpdateCategory = ({
         );
         const imgData = await imageUrl.json();
         coverImgUrl = imgData?.data;
-        console.log(coverImgUrl);
       }
 
       const data = {

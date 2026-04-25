@@ -36,8 +36,6 @@ export const updateOrderItems = async (id: string, data: any) => {
   try {
     const cookieStore = await cookies();
 
-    console.log(data);
-
     const res = await fetch(
       `${env.NEXT_PUBLIC_BACKEND_API_URL}orders/update-order-items/${id}`,
       {

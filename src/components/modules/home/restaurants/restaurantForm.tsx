@@ -61,7 +61,7 @@ export default function AddRestaurantForm({ ownerId }: { ownerId: string }) {
       setValue('avatarImg', file);
     }
   };
-  console.log(ownerId);
+
   const onSubmit = async (data: RestaurantFormData) => {
     setIsLoading(true);
     const toastId = toast.loading('Adding restaurant...');
@@ -117,8 +117,6 @@ export default function AddRestaurantForm({ ownerId }: { ownerId: string }) {
         closingTime: data.closingTime,
         offday: data.offday,
       };
-
-      console.log(restaurantData);
 
       // Submit restaurant data
       const result = await CreateRestaurntsAction(restaurantData);

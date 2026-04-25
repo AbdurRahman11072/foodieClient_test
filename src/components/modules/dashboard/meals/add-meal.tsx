@@ -134,8 +134,6 @@ export default function AddMealForm({
     const toastId = toast.loading('Adding product...');
 
     try {
-      console.log('this button is clicked');
-
       // First upload the image
       const imageFile = new FormData();
       imageFile.append('coverImg', data.coverImg as File);
@@ -167,8 +165,6 @@ export default function AddMealForm({
         servingSize: data.servingSize,
         categories: selectedCategories,
       };
-
-      console.log(mealData);
 
       // Submit product data
       const result = await CreateMealAction(mealData); // Assuming you have this action

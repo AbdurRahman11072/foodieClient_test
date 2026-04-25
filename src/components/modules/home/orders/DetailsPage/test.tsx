@@ -159,8 +159,6 @@ const OrderDetailPage = async ({
   const response = await orderService.getAllOrderByOrderId(id);
   const order: Order | null = response?.data;
 
-  console.log('order', order);
-
   if (!order) {
     notFound();
   }

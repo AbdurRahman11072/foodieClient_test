@@ -7,8 +7,6 @@ import { MealCard } from './meals/mealCard';
 const FeaturedMeals = async () => {
   const allMeals = await mealService.featuredMeal();
 
-  console.log(allMeals);
-
   if (!allMeals.success) {
     return (
       <section className="py-12 md:py-16 bg-secondary/30">

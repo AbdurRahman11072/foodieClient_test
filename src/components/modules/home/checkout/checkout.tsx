@@ -78,8 +78,6 @@ export default function CheckoutPage({ session }: { session: SessionData }) {
         items: cart,
       };
 
-      console.log(orderData);
-
       const res = await fetch(`${env.NEXT_PUBLIC_BACKEND_API_URL}orders`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -99,7 +97,6 @@ export default function CheckoutPage({ session }: { session: SessionData }) {
       toast.error('Failed to place order. Please try again.');
     }
   };
-  console.log(orderId);
 
   return (
     <main className="min-h-screen flex flex-col">

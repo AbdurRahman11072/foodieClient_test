@@ -20,7 +20,6 @@ export const userSerivce = {
       return null;
     }
     return session;
-    console.log(session);
   },
 
   getAllUsers: async () => {
@@ -37,8 +36,6 @@ export const userSerivce = {
 
       return data;
     } catch (error) {
-      console.log(error);
-
       return { success: false, message: 'Something went wrong', data: null };
     }
   },

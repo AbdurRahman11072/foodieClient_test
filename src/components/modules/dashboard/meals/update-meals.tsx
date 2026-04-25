@@ -237,8 +237,6 @@ export function UpdateMealSheet({
         status: meal.status,
       };
 
-      console.log('Sending meal data:', mealData.categories);
-
       // Call your update action with both mealData and meal.id
       const result = await UpdateMealAction(mealData, meal.id);
       if (!result.success) {

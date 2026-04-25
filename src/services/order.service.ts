@@ -17,16 +17,12 @@ const orderService = {
   },
 
   getAllOrderByUserId: async (id: string) => {
-    console.log(id);
-
     const res = await fetch(`${env.NEXT_PUBLIC_BACKEND_API_URL}orders/${id}`);
     const data = await res.json();
 
     return data;
   },
   getAllOrderByOrderId: async (id: string) => {
-    console.log(id);
-
     const res = await fetch(
       `${env.NEXT_PUBLIC_BACKEND_API_URL}orders/order-id/${id}`
     );

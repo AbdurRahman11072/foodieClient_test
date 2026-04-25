@@ -50,8 +50,6 @@ export const UpdateMealAction = async (meal: any, id: string) => {
 
     const data = await res.json();
 
-    console.log(data);
-
     if (!data.success) {
       return data;
     }

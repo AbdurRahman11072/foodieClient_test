@@ -71,7 +71,6 @@ const AddCategory = () => {
         }
       );
       const imgData = await imageUrl.json();
-      console.log(imgData?.data);
 
       const data = {
         name: formData.name,
@@ -79,7 +78,6 @@ const AddCategory = () => {
       };
 
       const res = await CreateCategoryAction(data);
-      console.log(res, data);
 
       if (!res.success) {
         return toast.error(res.message, { id: toastId });

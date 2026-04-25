@@ -58,7 +58,6 @@ const Login = () => {
 
     try {
       const { data, error } = await authClient.signIn.email(formData);
-      console.log(data, error);
 
       if (error) {
         return toast.error(error.message, { id: toastId });

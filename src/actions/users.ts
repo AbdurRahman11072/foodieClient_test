@@ -6,8 +6,6 @@ import { cookies } from 'next/headers';
 
 export const UpdateUserAction = async (id: string, userData: any) => {
   try {
-    console.log(userData);
-
     const cookieStore = await cookies();
 
     const res = await fetch(`${env.NEXT_PUBLIC_BACKEND_API_URL}users/${id}`, {

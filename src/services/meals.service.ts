@@ -17,7 +17,7 @@ const mealService = {
       if (!res.ok) {
         return [];
       }
-      return data?.data;
+      return data;
     } catch (error) {
       return { success: false, message: 'Something went wrong', data: null };
     }

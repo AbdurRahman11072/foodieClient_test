@@ -6,8 +6,6 @@ import { userSerivce } from '@/services/user.service';
 const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
   const session = await userSerivce.getUserSession();
 
-  console.log(session);
-
   return (
     <SidebarProvider>
       <AppSidebar session={session} />

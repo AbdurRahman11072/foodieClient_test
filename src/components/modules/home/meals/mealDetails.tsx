@@ -72,8 +72,6 @@ const MealDetailsCard = ({ meal, session }: MealDetailsCardProps) => {
       totalPrice: quantity * meal?.price,
     };
 
-    console.log(cartData);
-
     const existingCart = JSON.parse(localStorage.getItem('cart') || `[]`);
 
     const itemExist = existingCart.findIndex(
