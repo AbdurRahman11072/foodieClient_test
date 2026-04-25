@@ -1,33 +1,45 @@
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
 import { SessionData } from '@/types/session';
 
-export default function Stats({ session }: { session: SessionData | null }) {
+type stats = {
+  totalMeal?: number;
+  totalOrder?: number;
+  totalEarning?: number;
+  totalUser?: number;
+  activeUser?: number;
+};
+
+type statsType = {
+  session: SessionData | null;
+  statsData: stats;
+};
+
+export default function Stats({ session, statsData }: statsType) {
   let data = [
     {
       name: 'Total Meals',
-      stat: '10,450',
+      stat: statsData.totalMeal,
       change: '-12.5%',
       changeType: 'negative',
     },
 
     {
       name: 'Total Orders',
-      stat: '56.1%',
+      stat: statsData.totalOrder,
       change: '+1.8%',
       changeType: 'positive',
     },
     {
       name: 'Total earnings',
-      stat: '5.2min',
+      stat: `$${statsData.totalEarning}`,
       change: '+19.7%',
       changeType: 'positive',
     },
     {
       name: 'Reports',
-      stat: '3.2%',
+      stat: '1',
       change: '-2.4%',
       changeType: 'negative',
     },
@@ -37,25 +49,25 @@ export default function Stats({ session }: { session: SessionData | null }) {
     data = [
       {
         name: 'Total users',
-        stat: '10,450',
+        stat: statsData.totalUser,
         change: '-12.5%',
         changeType: 'negative',
       },
       {
         name: 'Active users',
-        stat: '3.2%',
+        stat: statsData.activeUser,
         change: '-2.4%',
         changeType: 'negative',
       },
       {
         name: 'Total Orders',
-        stat: '56.1%',
+        stat: statsData.totalOrder,
         change: '+1.8%',
         changeType: 'positive',
       },
       {
         name: 'Total earnings',
-        stat: '5.2min',
+        stat: `$${statsData.totalEarning} `,
         change: '+19.7%',
         changeType: 'positive',
       },
@@ -75,7 +87,7 @@ export default function Stats({ session }: { session: SessionData | null }) {
                 <span className="tabular-nums text-3xl font-semibold text-foreground">
                   {item.stat}
                 </span>
-                <span
+                {/* <span
                   className={cn(
                     item.changeType === 'positive'
                       ? 'text-green-800 dark:text-green-400'
@@ -84,7 +96,7 @@ export default function Stats({ session }: { session: SessionData | null }) {
                   )}
                 >
                   {item.change}
-                </span>
+                </span> */}
               </dd>
             </CardContent>
           </Card>

@@ -90,6 +90,7 @@ export const ITEM_STATUS_CONFIG = {
 
 export interface OrderItem {
   id: string;
+  orderId: string;
   restaurantId: string;
   restaurantName: string;
   mealId: string;

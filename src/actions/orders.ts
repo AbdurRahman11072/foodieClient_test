@@ -2,6 +2,7 @@
 
 import { env } from '@/env';
 import { updateTag } from 'next/cache';
+
 import { cookies } from 'next/headers';
 
 export const cancelOrder = async (id: string) => {
@@ -22,7 +23,7 @@ export const cancelOrder = async (id: string) => {
 
     if (!data.success) return data;
 
-    updateTag('AllOrders');
+    updateTag('AllOrdersItems');
     return data;
   } catch (error) {
     return {
@@ -51,8 +52,35 @@ export const updateOrderItems = async (id: string, data: any) => {
 
     if (!result.success) return result;
 
-    updateTag('AllOrders');
+    updateTag('AllOrdersItems');
     return result;
+  } catch (error) {
+    return {
+      success: false,
+      message: 'Something went wrong. Please try again later',
+      data: null,
+    };
+  }
+};
+
+export const updateOrderItemStatus = async (id: string, status: any) => {
+  try {
+    console.log(status);
+    const res = await fetch(
+      `${env.NEXT_PUBLIC_BACKEND_API_URL}orders/update-order-item-status/${id}`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+
+        body: JSON.stringify(status),
+      }
+    );
+
+    const data = await res.json();
+    updateTag('AllOrders');
+    return data;
   } catch (error) {
     return {
       success: false,

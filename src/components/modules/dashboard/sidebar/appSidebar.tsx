@@ -4,7 +4,6 @@ import {
   BarChart3,
   ChevronDown,
   ClipboardList,
-  DollarSign,
   LayoutDashboard,
   Package,
   Settings,
@@ -64,14 +63,9 @@ export function AppSidebar({ session }: { session: SessionData | null }) {
       key: 'meals',
     },
     {
-      title: 'Sales',
+      title: 'Orders',
       icon: ShoppingCart,
-      href: '/dashboard/sales',
-      submenu: [
-        { title: 'Orders', href: '#' },
-        { title: 'Reports', href: '#' },
-      ],
-      key: 'sales',
+      href: '/dashboard/orders',
     },
     {
       title: 'Analytics',
@@ -118,35 +112,14 @@ export function AppSidebar({ session }: { session: SessionData | null }) {
         key: 'meals',
       },
       {
-        title: 'Sales',
+        title: 'Orders',
         icon: ShoppingCart,
-        href: '/dashboard/sales',
-        submenu: [
-          { title: 'Orders', href: '#' },
-          { title: 'Reports', href: '#' },
-        ],
-        key: 'sales',
+        href: '/dashboard/orders',
       },
       {
         title: 'Catagory',
         icon: ClipboardList,
         href: '/dashboard/category',
-      },
-
-      {
-        title: 'Analytics',
-        icon: BarChart3,
-        href: '/dashboard/analytics',
-      },
-      {
-        title: 'Finance',
-        icon: DollarSign,
-        href: '/dashboard/finance',
-        submenu: [
-          { title: 'Accounts', href: '#' },
-          { title: 'Transactions', href: '#' },
-        ],
-        key: 'finance',
       },
 
       {
