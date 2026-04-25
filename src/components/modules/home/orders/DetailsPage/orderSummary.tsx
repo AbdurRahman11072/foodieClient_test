@@ -1,10 +1,20 @@
-// components/orders/OrderSummary.tsx
+'use client';
+import { cancelOrder } from '@/actions/orders';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Order } from '@/types/order';
-import { AlertCircle, CreditCard, DollarSign, XCircle } from 'lucide-react';
+import {
+  AlertCircle,
+  CreditCard,
+  DollarSign,
+  Loader2,
+  XCircle,
+} from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 // Fix: Accept props as an object
 interface OrderSummaryProps {
@@ -12,6 +22,8 @@ interface OrderSummaryProps {
 }
 
 const OrderSummary = ({ order }: OrderSummaryProps) => {
+  const [isCancelling, setIsCancelling] = useState(false);
+  const router = useRouter();
   // Destructure order from props
   const calculateSubtotal = () => {
     return order.items.reduce((sum, item) => sum + item.totalPrice, 0);
@@ -23,6 +35,29 @@ const OrderSummary = ({ order }: OrderSummaryProps) => {
 
   const calculateDeliveryFee = () => {
     return 2.99;
+  };
+
+  const canCancel = order.status === 'PREPARING' || order.status === 'PENDING';
+
+  const handleConfirmCancel = async () => {
+    setIsCancelling(true);
+
+    try {
+      const result = await cancelOrder(order.id);
+
+      if (result.success) {
+        toast.success(result.message || 'Order cancelled successfully');
+
+        router.refresh();
+      } else {
+        toast.error(result.message || 'Failed to cancel order');
+      }
+    } catch (error) {
+      console.error('Error cancelling order:', error);
+      toast.error('Something went wrong. Please try again.');
+    } finally {
+      setIsCancelling(false);
+    }
   };
 
   return (
@@ -88,20 +123,29 @@ const OrderSummary = ({ order }: OrderSummaryProps) => {
       </Card>
 
       {/* Order Actions */}
-      {order.status === 'PREPARING' && (
+      {canCancel && (
         <Card className="p-6 border-destructive/20">
           <h2 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
             <AlertCircle className="h-5 w-5 text-destructive" />
             Order Actions
           </h2>
-          <form action={`/api/orders/${order.id}/cancel`} method="POST">
+          <form>
             <Button
               type="submit"
               variant="outline"
               className="w-full text-destructive hover:bg-destructive/10 border-destructive/30"
+              onClick={handleConfirmCancel}
             >
-              <XCircle className="h-4 w-4 mr-2" />
-              Cancel Entire Order
+              {isCancelling && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
+              {isCancelling ? (
+                'Cancelling...'
+              ) : (
+                <span className="flex gap-4">
+                  <XCircle className="h-4 w-4 mr-2" /> Cancel Entire Order
+                </span>
+              )}
             </Button>
           </form>
           <p className="text-xs text-muted-foreground text-center mt-3">

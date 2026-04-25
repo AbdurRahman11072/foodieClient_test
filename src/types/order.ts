@@ -1,14 +1,14 @@
-import { Bike, CheckCircle, ChefHat, XCircle } from 'lucide-react';
+import { Bike, CheckCircle, ChefHat, Clock, XCircle } from 'lucide-react';
 
 export const STATUS_CONFIG = {
   PENDING: {
     label: 'Pending',
-    icon: ChefHat,
+    icon: Clock, // Changed from ChefHat to Clock
     bgColor: 'bg-primary/10',
     borderColor: 'border-primary/20',
     textColor: 'text-primary',
     badgeColor: 'bg-primary/10 text-primary border-primary/20',
-    description: 'Your order is being prepared',
+    description: 'Your order is pending confirmation',
     iconBg: 'bg-primary/10',
   },
   PREPARING: {
@@ -54,38 +54,37 @@ export const STATUS_CONFIG = {
 };
 
 // types/order.ts
-import { Clock } from 'lucide-react';
 
 export const ITEM_STATUS_CONFIG = {
   PENDING: {
     label: 'Pending',
     color: 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20',
     icon: Clock,
-    canCancel: true, // Add this
+    canCancel: true,
   },
   PREPARING: {
     label: 'Preparing',
     color: 'bg-primary/10 text-primary border-primary/20',
     icon: ChefHat,
-    canCancel: true, // Add this
+    canCancel: true,
   },
   READY: {
     label: 'Ready',
     color: 'bg-green-500/10 text-green-500 border-green-500/20',
     icon: CheckCircle,
-    canCancel: false, // Add this
+    canCancel: false,
   },
   DELIVERED: {
     label: 'Delivered',
     color: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
     icon: CheckCircle,
-    canCancel: false, // Add this
+    canCancel: false,
   },
   CANCELLED: {
     label: 'Cancelled',
     color: 'bg-destructive/10 text-destructive border-destructive/20',
     icon: XCircle,
-    canCancel: false, // Add this
+    canCancel: false,
   },
 };
 

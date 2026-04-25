@@ -12,10 +12,17 @@ type Category = {
 const HomeCategories = async () => {
   const categories = await categoryService.getAllCategory();
 
+  console.log(categories);
+
   if (!categories.success) {
     return (
-      <div className="flex justify-center items-center text-3xl font-bold">
-        <p>No category has been added please add a new categories</p>
+      <div className="mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-10">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground">
+            Browse by Category
+          </h2>
+          <p className="text-muted-foreground mt-2">{categories.message}</p>
+        </div>
       </div>
     );
   }

@@ -164,7 +164,11 @@ export default function CheckoutPage({ session }: { session: SessionData }) {
                       </p>
                     </div>
 
-                    <Button type="submit" size="lg" className="w-full mt-6">
+                    <Button
+                      type="submit"
+                      size="lg"
+                      className="w-full mt-6 text-white"
+                    >
                       Continue to Payment
                     </Button>
                   </form>
@@ -174,7 +178,7 @@ export default function CheckoutPage({ session }: { session: SessionData }) {
               {/* Payment Step */}
               {step === 'payment' && (
                 <Card className="p-8">
-                  <h2 className="text-2xl font-bold text-foreground mb-6">
+                  <h2 className="text-2xl font-bold text-foreground mb-6 ">
                     Payment Method
                   </h2>
 
@@ -227,7 +231,7 @@ export default function CheckoutPage({ session }: { session: SessionData }) {
                     </Button>
                     <Button
                       size="lg"
-                      className="flex-1"
+                      className="flex-1 text-white"
                       onClick={handleCheckout}
                     >
                       Place Order
@@ -291,7 +295,7 @@ export default function CheckoutPage({ session }: { session: SessionData }) {
                       </Button>
                     </Link>
                     <Link href="/meals" className="flex-1">
-                      <Button size="lg" className="w-full">
+                      <Button size="lg" className="w-full text-white">
                         Continue Shopping
                       </Button>
                     </Link>

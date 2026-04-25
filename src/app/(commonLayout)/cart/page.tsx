@@ -210,7 +210,7 @@ export default function CartPage() {
                 </div>
 
                 <Link href="/checkout" className="w-full block">
-                  <Button size="lg" className="w-full">
+                  <Button size="lg" className="w-full text-white">
                     Proceed to Checkout
                   </Button>
                 </Link>

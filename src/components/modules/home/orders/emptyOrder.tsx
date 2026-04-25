@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 export function EmptyOrdersState() {
   return (
-    <Card className="p-12 text-center">
+    <Card className="m-12 text-center h-[80vh] flex justify-center items-center">
       <div className="flex flex-col items-center">
         <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center mb-6">
           <Package className="h-12 w-12 text-muted-foreground" />
