@@ -52,8 +52,6 @@ const Login = () => {
   const [isPassword, setIsPassword] = useState(false);
 
   const onSubmit = async (formData: z.infer<typeof formSchema>) => {
-    // console.log(process.env.NEXT_PUBLIC_BACKEND_BATTER_AUTH_URL);
-
     const toastId = toast.loading('Authenticating user');
 
     try {

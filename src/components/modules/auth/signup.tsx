@@ -61,8 +61,6 @@ const SignUp = () => {
   const [isPassword, setIsPassword] = useState(false);
 
   const onSubmit = async (formData: z.infer<typeof formSchema>) => {
-    // console.log(process.env.NEXT_PUBLIC_BACKEND_BATTER_AUTH_URL);
-
     const toastId = toast.loading('Creating user');
     const { name, email, password } = formData;
 

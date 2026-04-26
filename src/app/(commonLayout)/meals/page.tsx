@@ -135,7 +135,7 @@ const BrowseMealspage = () => {
                       onClick={() => setSelectedCategories(undefined)}
                       className={`w-full text-left px-3 py-2 rounded transition-colors ${
                         !selectedCategories
-                          ? 'bg-primary text-primary-foreground'
+                          ? 'bg-primary text-white'
                           : 'hover:bg-secondary'
                       }`}
                     >

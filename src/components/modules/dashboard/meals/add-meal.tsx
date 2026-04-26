@@ -151,6 +151,11 @@ export default function AddMealForm({
       if (!imageData?.data) {
         throw new Error('Failed to upload image');
       }
+      const getRandomRating = (decimalPlaces: number = 1): number => {
+        const random = 3 + Math.random() * 2; // Between 3 and 5
+        const factor = Math.pow(10, decimalPlaces);
+        return Math.round(random * factor) / factor;
+      };
 
       // Prepare product data
       const mealData = {
@@ -158,6 +163,7 @@ export default function AddMealForm({
         restaurantId: restaurantId,
         coverImg: imageData.data,
         description: data.description,
+        rating: getRandomRating(1),
         price: data.price,
         available: data.available,
         ingredients: data.ingredients,

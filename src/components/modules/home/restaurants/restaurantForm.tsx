@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { env } from '@/env';
 import { restaurantSchema } from '@/schema/restaurant';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { PlusCircle, Store } from 'lucide-react';
+import { PlusCircle } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -67,7 +67,15 @@ export default function AddRestaurantForm({ ownerId }: { ownerId: string }) {
     const toastId = toast.loading('Adding restaurant...');
 
     try {
-      // Upload cover image
+      let coverImageUrl = '';
+      let avatarImageUrl = '';
+
+      // Upload cover image (required)
+      if (!data.coverImg) {
+        throw new Error('Cover image is required');
+      }
+
+      // Upload cover image - Using 'coverImg' field name (matches your backend)
       const coverImageFile = new FormData();
       coverImageFile.append('coverImg', data.coverImg as File);
 
@@ -81,15 +89,19 @@ export default function AddRestaurantForm({ ownerId }: { ownerId: string }) {
 
       const coverImageData = await coverImageUploadResponse.json();
 
-      if (!coverImageData?.data) {
-        throw new Error('Failed to upload cover image');
+      if (!coverImageUploadResponse.ok || !coverImageData?.data) {
+        throw new Error(
+          coverImageData?.message || 'Failed to upload cover image'
+        );
       }
 
-      // Upload avatar image if provided
-      let avatarImageUrl = coverImageData.data;
+      coverImageUrl = coverImageData.data;
+
+      // Upload avatar image (optional) - Also using 'coverImg' field name
+      // Note: Your backend expects 'coverImg' for any image upload
       if (data.avatarImg) {
         const avatarImageFile = new FormData();
-        avatarImageFile.append('avatarImg', data.avatarImg as File);
+        avatarImageFile.append('coverImg', data.avatarImg as File);
 
         const avatarImageUploadResponse = await fetch(
           `${env.NEXT_PUBLIC_BACKEND_API_URL}upload-image`,
@@ -101,16 +113,28 @@ export default function AddRestaurantForm({ ownerId }: { ownerId: string }) {
 
         const avatarImageData = await avatarImageUploadResponse.json();
 
-        if (avatarImageData?.data) {
+        if (avatarImageUploadResponse.ok && avatarImageData?.data) {
           avatarImageUrl = avatarImageData.data;
+        } else {
+          console.warn('Avatar upload failed, using cover as fallback');
+          avatarImageUrl = coverImageUrl;
         }
+      } else {
+        // If no avatar uploaded, use cover image as fallback
+        avatarImageUrl = coverImageUrl;
       }
+      const getRandomRating = (decimalPlaces: number = 1): number => {
+        const random = 3 + Math.random() * 2; // Between 3 and 5
+        const factor = Math.pow(10, decimalPlaces);
+        return Math.round(random * factor) / factor;
+      };
 
-      // Prepare restaurant data (ownerId will be added by the API)
+      // Prepare restaurant data
       const restaurantData = {
         ownerId: ownerId,
         name: data.name,
-        coverImg: coverImageData.data,
+        coverImg: coverImageUrl,
+        rating: getRandomRating(1),
         avatarImg: avatarImageUrl,
         description: data.description,
         openingTime: data.openingTime,
@@ -127,12 +151,13 @@ export default function AddRestaurantForm({ ownerId }: { ownerId: string }) {
 
       toast.success('Restaurant added successfully!', { id: toastId });
 
-      // Reset form
-      router.push('/dashboard');
+      // Reset form and redirect
       reset();
       setCoverImagePreview('');
       setAvatarImagePreview('');
+      router.push('/dashboard');
     } catch (error) {
+      console.error('Error adding restaurant:', error);
       toast.error(
         error instanceof Error ? error.message : 'Failed to add restaurant',
         { id: toastId }
@@ -216,15 +241,18 @@ export default function AddRestaurantForm({ ownerId }: { ownerId: string }) {
                               height={200}
                               className="max-h-32 mx-auto object-contain"
                             />
-                            <p className="text-sm text-gray-500">
+                            <p className="text-sm text-muted-foreground">
                               Click to change cover image
                             </p>
                           </div>
                         ) : (
                           <div className="space-y-2">
                             <div className="text-4xl mb-2">🏪</div>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-sm text-muted-foreground">
                               Click to upload cover image
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              Recommended: 1200x400px
                             </p>
                           </div>
                         )}
@@ -389,17 +417,20 @@ export default function AddRestaurantForm({ ownerId }: { ownerId: string }) {
                                   alt="Avatar Preview"
                                   width={200}
                                   height={200}
-                                  className="max-h-32 max-w-32 mx-auto object-contain "
+                                  className="max-h-32 max-w-32 mx-auto object-contain rounded-full"
                                 />
-                                <p className="text-sm text-gray-500">
+                                <p className="text-sm text-muted-foreground">
                                   Click to change avatar image
                                 </p>
                               </div>
                             ) : (
                               <div className="space-y-2">
                                 <div className="text-4xl mb-2">👤</div>
-                                <p className="text-sm text-gray-500">
+                                <p className="text-sm text-muted-foreground">
                                   Click to upload avatar image
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                  Recommended: 200x200px
                                 </p>
                               </div>
                             )}
@@ -411,21 +442,6 @@ export default function AddRestaurantForm({ ownerId }: { ownerId: string }) {
                       </Field>
                     )}
                   />
-                </div>
-              </Card>
-
-              {/* Info Card */}
-              <Card className="p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <Store className="h-5 w-5 text-muted-foreground" />
-                  <h2 className="text-lg font-semibold">Restaurant Info</h2>
-                </div>
-                <div className="space-y-3 text-sm text-muted-foreground">
-                  <p>• Owner ID will be automatically assigned by the API</p>
-                  <p>• Opening and closing times in 24-hour format</p>
-                  <p>• Select the weekly off day for the restaurant</p>
-                  <p>• Cover image will be displayed on the restaurant card</p>
-                  <p>• Avatar image is the restaurant logo/profile picture</p>
                 </div>
               </Card>
             </div>

@@ -4,7 +4,7 @@ import { Meal } from '@/types/meals';
 import Link from 'next/link';
 import { MealCard } from './meals/mealCard';
 
-const FeaturedMeals = async () => {
+const FeaturedRestaurants = async () => {
   const allMeals = await mealService.featuredMeal();
 
   if (!allMeals.success) {
@@ -60,4 +60,4 @@ const FeaturedMeals = async () => {
   );
 };
 
-export default FeaturedMeals;
+export default FeaturedRestaurants;

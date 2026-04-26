@@ -25,7 +25,12 @@ const mealService = {
 
   featuredMeal: async () => {
     try {
-      const res = await fetch(`${env.NEXT_PUBLIC_BACKEND_API_URL}meals`);
+      const res = await fetch(
+        `${env.NEXT_PUBLIC_BACKEND_API_URL}meals/featured-meal`,
+        {
+          next: { revalidate: 43200 },
+        }
+      );
       const data = await res.json();
 
       return data;

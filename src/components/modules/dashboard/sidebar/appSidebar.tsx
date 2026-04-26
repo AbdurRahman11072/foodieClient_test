@@ -6,7 +6,6 @@ import {
   ClipboardList,
   LayoutDashboard,
   Package,
-  Settings,
   ShoppingCart,
   Sparkles,
   Store,
@@ -73,16 +72,16 @@ export function AppSidebar({ session }: { session: SessionData | null }) {
       href: '/dashboard/analytics',
     },
 
-    {
-      title: 'Settings',
-      icon: Settings,
-      href: '#',
-      submenu: [
-        { title: 'General', href: '#' },
-        { title: 'Security', href: '#' },
-      ],
-      key: 'settings',
-    },
+    // {
+    //   title: 'Settings',
+    //   icon: Settings,
+    //   href: '#',
+    //   submenu: [
+    //     { title: 'General', href: '#' },
+    //     { title: 'Security', href: '#' },
+    //   ],
+    //   key: 'settings',
+    // },
   ];
   if (session?.user?.role === 'admin') {
     menuItems = [
@@ -120,17 +119,6 @@ export function AppSidebar({ session }: { session: SessionData | null }) {
         title: 'Catagory',
         icon: ClipboardList,
         href: '/dashboard/category',
-      },
-
-      {
-        title: 'Settings',
-        icon: Settings,
-        href: '#',
-        submenu: [
-          { title: 'General', href: '#' },
-          { title: 'Security', href: '#' },
-        ],
-        key: 'settings',
       },
     ];
   }

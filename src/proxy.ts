@@ -6,27 +6,32 @@ import { userSerivce } from './services/user.service';
 export async function proxy(request: NextRequest) {
   const userSession = await userSerivce.getUserSession();
   const currentPath = request.nextUrl.pathname;
-  console.log(currentPath);
+  // console.log(currentPath);
 
   const role = userSession?.user.role;
 
   const isUserAuthorized =
     role === userRole.provider || role === userRole.admin;
 
-  console.log(isUserAuthorized);
+  // console.log(isUserAuthorized);
 
   if (currentPath.startsWith('/dashboard') && !isUserAuthorized) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
   if (userSession && currentPath.startsWith('/login')) {
-    console.log('login');
-
     return NextResponse.redirect(new URL('/', request.url));
   }
 
   if (userSession && currentPath.startsWith('/sign-up')) {
     return NextResponse.redirect(new URL('/', request.url));
   }
+  if (!userSession && currentPath.startsWith('/orders')) {
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
+  if (!userSession && currentPath.startsWith('/checkout')) {
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
+
   if (
     currentPath.startsWith('/restaurants/create-restaurant') &&
     userSession.user.restaurantId !== null
@@ -37,6 +42,9 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
+    '/',
+    '/orders',
+    '/checkout',
     '/restaurants',
     '/restaurants/:path*',
     '/login',
