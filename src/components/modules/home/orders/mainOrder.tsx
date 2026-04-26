@@ -2,12 +2,12 @@
 'use client';
 
 import { Order } from '@/types/order';
-import { useRouter } from 'next/navigation';
+import { SessionData } from '@/types/session';
 import { useState } from 'react';
 import { OrderCard } from './orderCard';
 
 interface MainOrderProps {
-  session: any;
+  session: SessionData;
   orders: Order[];
 }
 
@@ -16,8 +16,6 @@ export default function MainOrder({
   orders: initialOrders,
 }: MainOrderProps) {
   const [orders, setOrders] = useState<Order[]>(initialOrders);
-
-  const router = useRouter();
 
   return (
     <main className="min-h-screen bg-background">
@@ -35,7 +33,7 @@ export default function MainOrder({
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="space-y-6">
             {orders.map((order) => (
-              <OrderCard key={order.id} order={order} />
+              <OrderCard key={order.id} order={order} session={session} />
             ))}
           </div>
         </div>

@@ -78,7 +78,7 @@ export const updateOrderItemStatus = async (id: string, status: any) => {
     );
 
     const data = await res.json();
-    updateTag('AllOrders');
+    updateTag('AllOrdersItems');
     return data;
   } catch (error) {
     return {

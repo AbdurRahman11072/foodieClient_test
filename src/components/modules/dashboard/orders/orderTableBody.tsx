@@ -16,12 +16,14 @@ interface OrderRowProps {
     newStatus: keyof typeof STATUS_CONFIG
   ) => Promise<void>;
   onViewDetails?: (orderItem: OrderItem) => void;
+  role: string;
 }
 
 export function OrderRow({
   orderItem,
   onStatusChange,
   onViewDetails,
+  role,
 }: OrderRowProps) {
   if (!orderItem) return null;
 
@@ -93,7 +95,7 @@ export function OrderRow({
       {/* Fixed: Added text-center and vertical alignment */}
       <TableCell className="text-center align-middle">
         <div className="flex items-center justify-center">
-          <OrderStatusDropdown orderItem={orderItem} />
+          <OrderStatusDropdown orderItem={orderItem} role={role} />
         </div>
       </TableCell>
 

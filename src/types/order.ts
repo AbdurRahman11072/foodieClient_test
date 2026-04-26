@@ -116,3 +116,10 @@ export interface Order {
   updatedAt: string;
   items: OrderItem[];
 }
+
+export type OrderStatus =
+  | 'PENDING'
+  | 'PREPARING'
+  | 'DELIVERING'
+  | 'COMPLETE'
+  | 'CANCELLED';

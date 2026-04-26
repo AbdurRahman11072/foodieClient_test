@@ -1,5 +1,5 @@
 import { EmptyOrdersState } from '@/components/modules/home/orders/emptyOrder';
-import { OrderCard } from '@/components/modules/home/orders/orderCard';
+import MainOrder from '@/components/modules/home/orders/mainOrder';
 import orderService from '@/services/order.service';
 import { userSerivce } from '@/services/user.service';
 import { Order } from '@/types/order';
@@ -12,35 +12,13 @@ const OrderPage = async () => {
   const response = await orderService.getAllOrderByUserId(session.user.id);
   const orders: Order[] = response?.data || [];
 
+  console.log(orders);
+
   if (orders.length === 0) {
     return <EmptyOrdersState />;
   }
 
-  return (
-    <main className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 border-b border-border py-12">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">
-            My Orders
-          </h1>
-          <p className="text-muted-foreground text-lg">
-            Track and manage all your orders in one place
-          </p>
-        </div>
-      </div>
-
-      <div className="flex-1 py-8 md:py-12">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div className="space-y-6 ">
-            {orders.map((order) => (
-              <OrderCard key={order.id} order={order} />
-            ))}
-          </div>
-        </div>
-      </div>
-    </main>
-  );
+  return <MainOrder session={session} orders={orders} />;
 };
 
 export default OrderPage;

@@ -18,14 +18,40 @@ import { toast } from 'sonner';
 
 interface OrderStatusDropdownProps {
   orderItem: OrderItem;
+  role: string;
 }
 
-export function OrderStatusDropdown({ orderItem }: OrderStatusDropdownProps) {
+export function OrderStatusDropdown({
+  orderItem,
+  role,
+}: OrderStatusDropdownProps) {
   const router = useRouter();
   const [isUpdating, setIsUpdating] = useState(false);
   const [status, setStatus] = useState<keyof typeof ITEM_STATUS_CONFIG>(
     orderItem.status
   );
+  const isAdmin = role === 'admin';
+
+  console.log(role, isAdmin);
+
+  const statusConfig = ITEM_STATUS_CONFIG[status];
+  if (isAdmin) {
+    const isCancelled = status === 'CANCELLED';
+    return (
+      <div
+        className={cn(
+          'w-[120px] h-8 text-xs border rounded-md flex items-center justify-center font-medium',
+          statusConfig?.color,
+          isCancelled && 'opacity-75'
+        )}
+        title={
+          isAdmin ? 'Admin view only' : 'Cancelled orders cannot be modified'
+        }
+      >
+        {statusConfig?.label || status}
+      </div>
+    );
+  }
 
   const handleStatusChange = async (
     newStatus: keyof typeof ITEM_STATUS_CONFIG
@@ -42,8 +68,9 @@ export function OrderStatusDropdown({ orderItem }: OrderStatusDropdownProps) {
       if (!result.success) {
         toast.error(result.message);
       }
+      setStatus(newStatus);
       toast.success('status updated');
-      window.location.reload();
+      router.refresh();
     } catch (error) {
       console.error('Error updating status:', error);
       toast.error('Failed to update order status');
@@ -51,8 +78,6 @@ export function OrderStatusDropdown({ orderItem }: OrderStatusDropdownProps) {
       setIsUpdating(false);
     }
   };
-
-  const statusConfig = ITEM_STATUS_CONFIG[status];
 
   return (
     <Select

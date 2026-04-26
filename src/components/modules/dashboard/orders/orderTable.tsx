@@ -4,18 +4,19 @@
 import { Card } from '@/components/ui/card';
 import { Table } from '@/components/ui/table';
 import { OrderItem } from '@/types/order';
-import { useState } from 'react';
 import { OrderRow } from './orderTableBody';
 import { OrderTableHeader } from './orderTableHeader';
 
-export function OrderTable({ orders }: { orders: OrderItem[] }) {
-  const [localOrders, setLocalOrders] = useState<OrderItem[]>(orders || []);
+export function OrderTable({
+  orders,
+  role,
+}: {
+  orders: OrderItem[];
+  role: string;
+}) {
+  const handleViewDetails = (orderItem: OrderItem) => {};
 
-  const handleViewDetails = (orderItem: OrderItem) => {
-    console.log('View details for order:', orderItem);
-  };
-
-  if (!localOrders || localOrders.length === 0) {
+  if (!orders || orders.length === 0) {
     return (
       <Card className="p-8 text-center">
         <p className="text-muted-foreground">No orders found</p>
@@ -28,11 +29,12 @@ export function OrderTable({ orders }: { orders: OrderItem[] }) {
       <Table>
         <OrderTableHeader />
         <tbody>
-          {localOrders.map((orderItem) => (
+          {orders.map((orderItem) => (
             <OrderRow
               key={orderItem.id}
               orderItem={orderItem}
               onViewDetails={handleViewDetails}
+              role={role}
             />
           ))}
         </tbody>

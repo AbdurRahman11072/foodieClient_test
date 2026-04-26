@@ -9,6 +9,7 @@ import { SessionData } from '@/types/session';
 
 const OrdersPage = async () => {
   const session: SessionData = await userSerivce.getUserSession();
+  const role = session.user.role;
 
   const response = await orderService.getAllOrders(
     session.user.restaurantId as string,
@@ -48,7 +49,7 @@ const OrdersPage = async () => {
         </div>
       </div>
 
-      <OrderTable orders={orders} />
+      <OrderTable orders={orders} role={role} />
     </div>
   );
 };
