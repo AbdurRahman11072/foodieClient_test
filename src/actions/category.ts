@@ -31,7 +31,7 @@ export const CreateCategoryAction = async (category: {
     return {
       success: false,
       message:
-        error instanceof Error ? error.message : 'Failed to create category1',
+        error instanceof Error ? error.message : 'Failed to create category',
       data: null,
     };
   }
@@ -63,7 +63,7 @@ export const DeleteCategoryAction = async (id: string) => {
     return {
       success: false,
       message:
-        error instanceof Error ? error.message : 'Failed to delete category1',
+        error instanceof Error ? error.message : 'Failed to delete category',
       data: null,
     };
   }

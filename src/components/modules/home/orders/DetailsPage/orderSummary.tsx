@@ -1,5 +1,5 @@
 'use client';
-import { cancelOrder } from '@/actions/orders';
+import { cancelOrderAction } from '@/actions/orders';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -43,7 +43,7 @@ const OrderSummary = ({ order }: OrderSummaryProps) => {
     setIsCancelling(true);
 
     try {
-      const result = await cancelOrder(order.id);
+      const result = await cancelOrderAction(order.id);
 
       if (result.success) {
         toast.success(result.message || 'Order cancelled successfully');

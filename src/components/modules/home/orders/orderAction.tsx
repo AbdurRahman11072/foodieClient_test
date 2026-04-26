@@ -1,7 +1,7 @@
 // components/orders/CancelOrderAction.tsx
 'use client';
 
-import { cancelOrder } from '@/actions/orders';
+import { cancelOrderAction } from '@/actions/orders';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -51,7 +51,7 @@ export function CancelOrderAction({
     setIsCancelling(true);
 
     try {
-      const result = await cancelOrder(orderId);
+      const result = await cancelOrderAction(orderId);
 
       if (result.success) {
         toast.success(result.message || 'Order cancelled successfully');

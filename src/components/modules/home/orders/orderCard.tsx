@@ -172,15 +172,6 @@ export function OrderCard({ order, session }: OrderCardProps) {
             </Button>
           </Link>
 
-          {order.status === 'COMPLETE' && (
-            <Button
-              size="sm"
-              className="bg-primary text-primary-foreground hover:bg-primary/90"
-            >
-              Rate Order
-            </Button>
-          )}
-
           {/* Cancel Action - Separate Component */}
           <CancelOrderAction
             orderId={order.id}

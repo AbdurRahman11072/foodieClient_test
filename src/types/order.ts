@@ -1,4 +1,5 @@
 import { Bike, CheckCircle, ChefHat, Clock, XCircle } from 'lucide-react';
+import { Review } from './review';
 
 export const STATUS_CONFIG = {
   PENDING: {
@@ -101,6 +102,11 @@ export interface OrderItem {
   totalPrice: number;
   status: keyof typeof ITEM_STATUS_CONFIG;
   createdAt: string;
+  updatedAt: string; // ✅ Add this field
+  meal?: {
+    // ✅ Add meal relation with reviews
+    reviews: Partial<Review[]> | [];
+  };
 }
 
 export interface Order {

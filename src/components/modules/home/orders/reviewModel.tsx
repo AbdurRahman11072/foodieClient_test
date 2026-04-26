@@ -1,6 +1,7 @@
 // components/orders/reviewModel.tsx
 'use client';
 
+import { CreateReviewAction } from '@/actions/review';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -13,6 +14,7 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { Star } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface ReviewModalProps {
   isOpen: boolean;
@@ -69,18 +71,18 @@ export function ReviewModal({
 
       console.log('Submitting review:', reviewData);
 
-      //   const result = await createReview(reviewData);
+      const result = await CreateReviewAction(reviewData);
 
-      //   if (result.success) {
-      //     console.log('Review submitted successfully:', result.data);
-      //     resetForm();
-      //     onClose();
-      //     if (onSuccess) {
-      //       onSuccess();
-      //     }
-      //   } else {
-      //     setError(result.error || 'Failed to submit review');
-      //   }
+      if (!result.success) {
+        return toast.error(result.message);
+      }
+
+      console.log('Review submitted successfully:', result.data);
+      resetForm();
+      onClose();
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (error) {
       console.error('Error submitting review:', error);
       setError('Failed to submit review. Please try again.');
@@ -167,7 +169,11 @@ export function ReviewModal({
           <Button variant="outline" onClick={handleClose}>
             Cancel
           </Button>
-          <Button onClick={handleSubmit} disabled={isLoading}>
+          <Button
+            onClick={handleSubmit}
+            disabled={isLoading}
+            className="text-white"
+          >
             {isLoading ? 'Submitting...' : 'Submit Review'}
           </Button>
         </DialogFooter>

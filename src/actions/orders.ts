@@ -5,7 +5,7 @@ import { updateTag } from 'next/cache';
 
 import { cookies } from 'next/headers';
 
-export const cancelOrder = async (id: string) => {
+export const cancelOrderAction = async (id: string) => {
   try {
     const cookieStore = await cookies();
 
@@ -33,7 +33,7 @@ export const cancelOrder = async (id: string) => {
     };
   }
 };
-export const updateOrderItems = async (id: string, data: any) => {
+export const updateOrderItemsAction = async (id: string, data: any) => {
   try {
     const cookieStore = await cookies();
 
@@ -63,7 +63,7 @@ export const updateOrderItems = async (id: string, data: any) => {
   }
 };
 
-export const updateOrderItemStatus = async (id: string, status: any) => {
+export const updateOrderItemStatusAction = async (id: string, status: any) => {
   try {
     const res = await fetch(
       `${env.NEXT_PUBLIC_BACKEND_API_URL}orders/update-order-item-status/${id}`,

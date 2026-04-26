@@ -1,7 +1,7 @@
 // components/orders/OrderDetails.tsx
 'use client';
 
-import { updateOrderItems } from '@/actions/orders';
+import { updateOrderItemsAction } from '@/actions/orders';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -47,7 +47,7 @@ const OrderDetails = ({ order }: OrderDetailsProps) => {
     setCancellingItemId(itemId);
 
     try {
-      const res = await updateOrderItems(itemId, { status: 'CANCELLED' });
+      const res = await updateOrderItemsAction(itemId, { status: 'CANCELLED' });
 
       if (!res?.success) {
         toast.error(res?.message || 'Failed to cancel item');

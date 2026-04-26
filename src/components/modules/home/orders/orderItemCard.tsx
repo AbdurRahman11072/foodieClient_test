@@ -11,7 +11,7 @@ import {
 import { SessionData } from '@/types/session';
 import { Package, Star } from 'lucide-react';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ReviewModal } from './reviewModel';
 
 interface OrderItemCardProps {
@@ -30,7 +30,13 @@ export function OrderItemCard({
 
   const ItemStatusIcon = ITEM_STATUS_CONFIG[item.status]?.icon || Package;
   const itemStatusConfig = ITEM_STATUS_CONFIG[item.status];
-  const canReview = orderStatus === 'COMPLETE' && !hasReviewed;
+
+  useEffect(() => {
+    const reviewCount = item.meal?.reviews?.length ?? 0;
+    if (reviewCount > 0) {
+      setHasReviewed(true);
+    }
+  }, [item.meal?.reviews]);
 
   const handleReviewSuccess = () => {
     setHasReviewed(true);
@@ -86,7 +92,7 @@ export function OrderItemCard({
             </Badge>
 
             {/* Review Button */}
-            {canReview && (
+            {!hasReviewed && (
               <Button
                 variant="outline"
                 size="sm"
@@ -118,7 +124,7 @@ export function OrderItemCard({
         userName={session?.user?.name}
         userImg={session?.user?.image}
         restaurantId={item.restaurantId}
-        mealId={item.id}
+        mealId={item.mealId}
         onSuccess={handleReviewSuccess}
       />
     </>

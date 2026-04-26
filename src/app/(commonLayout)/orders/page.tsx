@@ -12,8 +12,6 @@ const OrderPage = async () => {
   const response = await orderService.getAllOrderByUserId(session.user.id);
   const orders: Order[] = response?.data || [];
 
-  console.log(orders);
-
   if (orders.length === 0) {
     return <EmptyOrdersState />;
   }

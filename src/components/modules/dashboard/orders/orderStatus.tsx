@@ -1,7 +1,7 @@
 // components/orders/order-status-dropdown.tsx
 'use client';
 
-import { updateOrderItemStatus } from '@/actions/orders';
+import { updateOrderItemStatusAction } from '@/actions/orders';
 import {
   Select,
   SelectContent,
@@ -61,7 +61,7 @@ export function OrderStatusDropdown({
     setIsUpdating(true);
     try {
       // Directly call the API to update order status
-      const result = await updateOrderItemStatus(orderItem.id, {
+      const result = await updateOrderItemStatusAction(orderItem.id, {
         status: newStatus,
       });
 
