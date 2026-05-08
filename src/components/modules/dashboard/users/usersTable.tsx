@@ -27,6 +27,9 @@ import {
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { Pagination } from '@/components/ui/pagination-custom';
+
 // User type based on actual API response
 export interface User {
   id: string;
@@ -48,6 +51,9 @@ export interface User {
 
 export interface UsersTableProps {
   users: User[] | null;
+  totalItems: number;
+  currentPage: number;
+  limit: number;
   onEdit?: (user: User) => void;
   onDelete?: (user: User) => void;
   onBan?: (user: User) => void;
@@ -58,6 +64,9 @@ export interface UsersTableProps {
 
 export function UsersTable({
   users,
+  totalItems,
+  currentPage,
+  limit,
   onEdit,
   onDelete,
   onBan,
@@ -65,6 +74,17 @@ export function UsersTable({
   onView,
   onRoleChange,
 }: UsersTableProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const handlePageChange = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', page.toString());
+    router.push(`${pathname}?${params.toString()}`);
+  };
+
+  const totalPages = Math.ceil(totalItems / limit);
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [detailsSheetOpen, setDetailsSheetOpen] = useState(false);
@@ -344,6 +364,15 @@ export function UsersTable({
               )}
             </TableBody>
           </Table>
+        </div>
+
+        {/* Pagination */}
+        <div className="mt-4 flex justify-center">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
         </div>
       </div>
 

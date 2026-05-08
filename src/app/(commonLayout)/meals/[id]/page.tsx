@@ -3,6 +3,8 @@ import mealService from '@/services/meals.service';
 import { userSerivce } from '@/services/user.service';
 import Link from 'next/link';
 
+
+
 const MealDetailPage = async ({
   params,
 }: {

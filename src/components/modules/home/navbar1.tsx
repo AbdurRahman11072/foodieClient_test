@@ -1,5 +1,6 @@
 'use client';
 
+import Logo2 from '@/assets/foodie_logo_dark_text.svg';
 import { Menu, ShoppingCart } from 'lucide-react';
 
 import {
@@ -41,18 +42,25 @@ const Navbar1 = ({ logo, menu, auth, session, className }: Navbar1Props) => {
             {/* Logo */}
             <Link
               href={logo?.url as string}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 w-40 h-8"
             >
               <Image
                 src={logo?.src as string}
-                className="max-h-8 dark:invert"
+                className="w-full object-cover hidden dark:block"
                 alt={logo?.alt as string}
-                width={50}
-                height={50}
+                width={70}
+                height={70}
               />
-              <span className="text-lg font-semibold tracking-tighter">
+              <Image
+                src={Logo2}
+                className="w-full object-cover block dark:hidden"
+                alt={logo?.alt as string}
+                width={70}
+                height={70}
+              />
+              {/* <span className="text-lg font-semibold tracking-tighter">
                 {logo?.title}
-              </span>
+              </span> */}
             </Link>
           </div>
           <div className="flex items-center">
@@ -92,12 +100,21 @@ const Navbar1 = ({ logo, menu, auth, session, className }: Navbar1Props) => {
             {/* Logo */}
             <Link
               href={logo?.url as string}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 w-32 h-8"
             >
-              <img
-                src={logo?.src}
-                className="max-h-8 dark:invert"
-                alt={logo?.alt}
+              <Image
+                src={logo?.src as string}
+                className="w-full object-cover hidden dark:block"
+                alt={logo?.alt as string}
+                width={70}
+                height={70}
+              />
+              <Image
+                src={Logo2}
+                className="w-full object-cover block dark:hidden"
+                alt={logo?.alt as string}
+                width={70}
+                height={70}
               />
             </Link>
             <div className="flex justify-center items-center gap-4">
@@ -121,12 +138,21 @@ const Navbar1 = ({ logo, menu, auth, session, className }: Navbar1Props) => {
                     <SheetTitle>
                       <Link
                         href={logo?.url as string}
-                        className="flex items-center gap-2"
+                        className="flex items-center gap-2 w-32 h-8"
                       >
-                        <img
-                          src={logo?.src}
-                          className="max-h-8 dark:invert"
-                          alt={logo?.alt}
+                        <Image
+                          src={logo?.src as string}
+                          className="w-full object-cover hidden dark:block"
+                          alt={logo?.alt as string}
+                          width={70}
+                          height={70}
+                        />
+                        <Image
+                          src={Logo2}
+                          className="w-full object-cover block dark:hidden"
+                          alt={logo?.alt as string}
+                          width={70}
+                          height={70}
                         />
                       </Link>
                     </SheetTitle>
@@ -140,18 +166,20 @@ const Navbar1 = ({ logo, menu, auth, session, className }: Navbar1Props) => {
                       {menu?.map((item) => renderMobileMenuItem(item))}
                     </Accordion>
 
-                    <div className="flex flex-col gap-3">
-                      <Button asChild variant="outline">
-                        <Link href={auth?.login.url as string}>
-                          {auth?.login.title}
-                        </Link>
-                      </Button>
-                      <Button asChild>
-                        <Link href={auth?.signup.url as string}>
-                          {auth?.signup.title}
-                        </Link>
-                      </Button>
-                    </div>
+                    {!session && (
+                      <div className="flex flex-col gap-3">
+                        <Button asChild variant="outline">
+                          <Link href={auth?.login.url as string}>
+                            {auth?.login.title}
+                          </Link>
+                        </Button>
+                        <Button asChild>
+                          <Link href={auth?.signup.url as string}>
+                            {auth?.signup.title}
+                          </Link>
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </SheetContent>
               </Sheet>

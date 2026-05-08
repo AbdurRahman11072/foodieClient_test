@@ -33,11 +33,23 @@ const SORT_OPTIONS = [
   { id: 'newest', label: 'Newest', icon: Clock },
 ];
 
+import { Pagination } from '@/components/ui/pagination-custom';
+
 interface RestaurantsProps {
   restaurants: Restaurant[];
+  totalItems: number;
+  currentPage: number;
+  limit: number;
+  onPageChange: (page: number) => void;
 }
 
-export default function Restaurants({ restaurants }: RestaurantsProps) {
+export default function Restaurants({
+  restaurants,
+  totalItems,
+  currentPage,
+  limit,
+  onPageChange,
+}: RestaurantsProps) {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('rating');
 
@@ -128,7 +140,7 @@ export default function Restaurants({ restaurants }: RestaurantsProps) {
                 </span>{' '}
                 of{' '}
                 <span className="font-semibold text-foreground">
-                  {restaurants.length}
+                  {totalItems}
                 </span>{' '}
                 restaurants
               </p>
@@ -160,23 +172,34 @@ export default function Restaurants({ restaurants }: RestaurantsProps) {
               )}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {sorted.map((restaurant) => (
-                <RestaurantCard
-                  key={restaurant.id}
-                  id={restaurant.id}
-                  name={restaurant.name}
-                  description={restaurant.description}
-                  rating={restaurant.rating}
-                  mealsCount={restaurant._count.meals}
-                  ordersCount={restaurant._count.orderItem}
-                  coverImg={restaurant.coverImg}
-                  avatarImg={restaurant.avatarImg}
-                  openingTime={restaurant.openingTime}
-                  closingTime={restaurant.closingTime}
-                  offday={restaurant.offday}
+            <div className="space-y-12">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {sorted.map((restaurant) => (
+                  <RestaurantCard
+                    key={restaurant.id}
+                    id={restaurant.id}
+                    name={restaurant.name}
+                    description={restaurant.description}
+                    rating={restaurant.rating}
+                    mealsCount={restaurant._count.meals}
+                    ordersCount={restaurant._count.orderItem}
+                    coverImg={restaurant.coverImg}
+                    avatarImg={restaurant.avatarImg}
+                    openingTime={restaurant.openingTime}
+                    closingTime={restaurant.closingTime}
+                    offday={restaurant.offday}
+                  />
+                ))}
+              </div>
+
+              {/* Pagination */}
+              <div className="flex justify-center">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={Math.ceil(totalItems / limit)}
+                  onPageChange={onPageChange}
                 />
-              ))}
+              </div>
             </div>
           )}
         </div>

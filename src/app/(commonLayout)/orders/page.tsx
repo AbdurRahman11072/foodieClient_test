@@ -6,8 +6,11 @@ import { Order } from '@/types/order';
 
 // Status configuration using CSS variables
 
+
 const OrderPage = async () => {
   const session = await userSerivce.getUserSession();
+
+  if (!session) return null;
 
   const response = await orderService.getAllOrderByUserId(session.user.id);
   const orders: Order[] = response?.data || [];

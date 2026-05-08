@@ -18,7 +18,7 @@ import { env } from '@/env';
 import { authClient } from '@/lib/auth-client';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { EyeIcon, EyeOffIcon } from 'lucide-react';
+import { EyeIcon, EyeOffIcon, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -42,6 +42,7 @@ export type signInDataType = z.infer<typeof formSchema>;
 
 const Login = () => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -52,22 +53,21 @@ const Login = () => {
   const [isPassword, setIsPassword] = useState(false);
 
   const onSubmit = async (formData: z.infer<typeof formSchema>) => {
-    const toastId = toast.loading('Authenticating user');
+    setIsLoading(true);
+    
 
     try {
       const { data, error } = await authClient.signIn.email(formData);
 
       if (error) {
-        return toast.error(error.message, { id: toastId });
+        return toast.error(error.message);
       }
 
       router.refresh();
-      toast.success('Login successfull', { id: toastId });
+      
       router.push('/');
     } catch (error) {
-      toast.error('Something went wrong. Please try again later', {
-        id: toastId,
-      });
+      toast.error('Something went wrong. Please try again later');
     }
   };
 
@@ -147,7 +147,15 @@ const Login = () => {
                 </Field>
               )}
             />
-            <Button className="w-full text-white">Sign In</Button>
+            {isLoading ? (
+               <Button className="w-full text-white">
+               
+                <Loader2 className="w-4 h-4 animate-spin" /> Sign In
+              </Button>
+             
+            ) : (
+              <Button className="w-full text-white"> Sign In</Button>
+            )}
           </form>
           <div>
             <div className="my-6 grid grid-cols-[1fr_auto_1fr] items-center gap-3">

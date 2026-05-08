@@ -7,17 +7,31 @@ import { userSerivce } from '@/services/user.service';
 import { OrderItem } from '@/types/order';
 import { SessionData } from '@/types/session';
 
-const OrdersPage = async () => {
+
+
+interface PageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+const OrdersPage = async ({ searchParams }: PageProps) => {
   const session: SessionData = await userSerivce.getUserSession();
+  const params = await searchParams;
+
+  if (!session) return null;
+
   const role = session.user.role;
+  const page = params.page ? parseInt(params.page as string) : 1;
+  const limit = 10;
 
   const response = await orderService.getAllOrders(
     session.user.restaurantId as string,
-    session.user.role
+    session.user.role,
+    page,
+    limit
   );
 
   // Extract orders from response
-  let orders: OrderItem[] = response.data || [];
+  let orders: OrderItem[] = response.data.data || [];
 
   if (!response.success) {
     return (
@@ -45,11 +59,17 @@ const OrdersPage = async () => {
           </p>
         </div>
         <div className="text-sm text-muted-foreground">
-          Total Orders: {orders.length}
+          Total Orders: {response.data.total}
         </div>
       </div>
 
-      <OrderTable orders={orders} role={role} />
+      <OrderTable
+        orders={orders}
+        role={role}
+        totalItems={response.data.total}
+        currentPage={page}
+        limit={limit}
+      />
     </div>
   );
 };

@@ -1,8 +1,9 @@
+import logoSrc from '@/assets/foodie_logo_white_text.svg';
 export const logo = {
-  url: 'https://www.shadcnblocks.com',
-  src: 'https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/shadcnblockscom-icon.svg',
+  url: '/',
+  src: logoSrc,
   alt: 'logo',
-  title: 'Shadcnblocks.com',
+  title: 'Foodie',
 };
 export const menu = [
   { title: 'Home', url: '/' },

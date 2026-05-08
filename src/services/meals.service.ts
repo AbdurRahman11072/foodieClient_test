@@ -1,12 +1,21 @@
 import { env } from '@/env';
 
 const mealService = {
-  getAllMealByRestaurants: async (id: string | null, role: string) => {
+  getAllMealByRestaurants: async (
+    id: string | null,
+    role: string,
+    page: number = 1,
+    limit: number = 10
+  ) => {
     try {
+      const params = new URLSearchParams();
+      params.append('page', page.toString());
+      params.append('limit', limit.toString());
+
       const url =
         role === 'admin'
-          ? `${env.NEXT_PUBLIC_BACKEND_API_URL}meals` // get all meals
-          : `${env.NEXT_PUBLIC_BACKEND_API_URL}meals/restaurant/${id}`; // get meals by restaurant id
+          ? `${env.NEXT_PUBLIC_BACKEND_API_URL}meals?${params.toString()}` // get all meals
+          : `${env.NEXT_PUBLIC_BACKEND_API_URL}meals/restaurant/${id}?${params.toString()}`; // get meals by restaurant id
       const res = await fetch(url, {
         cache: 'no-store',
         next: { tags: ['AllMeals'] },
@@ -15,21 +24,22 @@ const mealService = {
       const data = await res.json();
 
       if (!res.ok) {
-        return [];
+        return { success: false, data: { data: [], total: 0 } };
       }
       return data;
     } catch (error) {
-      return { success: false, message: 'Something went wrong', data: null };
+      return {
+        success: false,
+        message: 'Something went wrong',
+        data: { data: [], total: 0 },
+      };
     }
   },
 
   featuredMeal: async () => {
     try {
       const res = await fetch(
-        `${env.NEXT_PUBLIC_BACKEND_API_URL}meals/featured-meal`,
-        {
-          next: { revalidate: 43200 },
-        }
+        `${env.NEXT_PUBLIC_BACKEND_API_URL}meals/featured-meal`
       );
       const data = await res.json();
 
@@ -78,7 +88,11 @@ const mealService = {
 
       return data;
     } catch (error) {
-      return { success: false, message: 'Something went wrong', data: [] };
+      return {
+        success: false,
+        message: 'Something went wrong',
+        data: { data: [], totalMeal: 0 },
+      };
     }
   },
   getMealDetailsById: async (id: string) => {

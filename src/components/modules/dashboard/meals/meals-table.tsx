@@ -2,7 +2,9 @@
 'use client';
 
 import { Meal, MealsTableProps } from '@/types/meals';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
+import { Pagination } from '@/components/ui/pagination-custom';
 import { MealDetailsSheet } from './meals-sheet';
 
 import { MealsTableBody } from './meal-table-body';
@@ -11,6 +13,9 @@ import { UpdateMealSheet } from './update-meals';
 
 interface ExtendedMealsTableProps extends MealsTableProps {
   restaurantId: string;
+  totalItems: number;
+  currentPage: number;
+  limit: number;
 }
 
 export function MealsTable({
@@ -21,10 +26,25 @@ export function MealsTable({
   onToggleAvailability,
   onView,
   restaurantId,
+  totalItems,
+  currentPage,
+  limit,
 }: ExtendedMealsTableProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
   const [detailsSheetOpen, setDetailsSheetOpen] = useState(false);
   const [editSheetOpen, setEditSheetOpen] = useState(false);
+
+  const handlePageChange = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', page.toString());
+    router.push(`${pathname}?${params.toString()}`);
+  };
+
+  const totalPages = Math.ceil(totalItems / limit);
 
   const handleViewDetails = (meal: Meal) => {
     setSelectedMeal(meal);
@@ -60,6 +80,15 @@ export function MealsTable({
               />
             </table>
           </div>
+        </div>
+
+        {/* Pagination */}
+        <div className="mt-4 flex justify-center">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
         </div>
       </div>
 

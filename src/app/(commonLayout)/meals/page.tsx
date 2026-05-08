@@ -3,33 +3,55 @@
 import { MealCard } from '@/components/modules/home/meals/mealCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Pagination } from '@/components/ui/pagination-custom';
 import { categoryService } from '@/services/category.service';
 import mealService from '@/services/meals.service';
 import { Meal } from '@/types/meals';
 import { Filter, Search } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { Suspense, useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce';
 
-const BrowseMealspage = () => {
+const BrowseMealsContent = () => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+  const categoryParam = searchParams.get('category');
+
   const [search, setSearch] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<
     string | undefined
-  >(undefined);
+  >(categoryParam || undefined);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 50]);
   const [categories, setCategories] = useState<
     { id: string; name: string; coverImg: string }[]
   >([]);
   const [meals, setMeals] = useState<Meal[]>([]);
-  const [loading, setLoading] = useState(true); // Add loading state
-  const [initialLoading, setInitialLoading] = useState(true); // For initial featured meals load
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 8;
 
-  const [debouncedSearch] = useDebounce(search, 2000);
-  const [debouncedCategory] = useDebounce(selectedCategories, 2000);
-  const [debouncedPrice] = useDebounce(priceRange, 2000);
+  const [debouncedSearch] = useDebounce(search, 500);
+  const [debouncedCategory] = useDebounce(selectedCategories, 500);
+  const [debouncedPrice] = useDebounce(priceRange, 500);
+
+  // Sync state with URL param if it changes
+  useEffect(() => {
+    if (categoryParam) {
+      setSelectedCategories(categoryParam);
+      setCurrentPage(1);
+    }
+  }, [categoryParam]);
+
+  // Reset page on filter change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [debouncedSearch, debouncedCategory, debouncedPrice]);
 
   // Fetch categories
   useEffect(() => {
-    const category = async () => {
+    const fetchCategories = async () => {
       try {
         const data = await categoryService.getAllCategory();
         setCategories(data.data);
@@ -37,51 +59,47 @@ const BrowseMealspage = () => {
         console.error('Error fetching categories:', error);
       }
     };
-    category();
+    fetchCategories();
   }, []);
 
-  // Fetch initial featured meals
+  // Fetch meals based on filters or default to featured
   useEffect(() => {
-    const mealData = async () => {
-      setInitialLoading(true);
-      try {
-        const data = await mealService.featuredMeal();
-        setMeals(data.data.data);
-      } catch (error) {
-        console.error('Error fetching featured meals:', error);
-      } finally {
-        setInitialLoading(false);
-      }
-    };
-    mealData();
-  }, []);
-
-  // Fetch filtered meals
-  useEffect(() => {
-    const mealData = async () => {
+    const fetchMeals = async () => {
       setLoading(true);
       try {
         const data = await mealService.getAllMeals({
           search: debouncedSearch,
           category: debouncedCategory,
           price: debouncedPrice[1],
+          page: currentPage,
+          limit: limit,
         });
 
-        if (data.data.data.length === 0) {
-          setMeals([]);
+        if (
+          data.data.data.length === 0 &&
+          !debouncedSearch &&
+          !debouncedCategory &&
+          debouncedPrice[1] === 50 &&
+          currentPage === 1
+        ) {
+          const featured = await mealService.featuredMeal();
+          setMeals(featured.data.data);
+          setTotalPages(1);
         } else {
-          setMeals(data.data.data);
+          setMeals(data.data.data || []);
+          setTotalPages(Math.ceil((data.data.totalMeal || 0) / limit));
         }
       } catch (error) {
-        console.error('Error fetching filtered meals:', error);
+        console.error('Error fetching meals:', error);
         setMeals([]);
+        setTotalPages(1);
       } finally {
         setLoading(false);
       }
     };
 
-    mealData();
-  }, [debouncedSearch, debouncedPrice, debouncedCategory]);
+    fetchMeals();
+  }, [debouncedSearch, debouncedCategory, debouncedPrice, currentPage]);
 
   return (
     <section className="min-h-screen container mx-auto flex flex-col">
@@ -132,7 +150,10 @@ const BrowseMealspage = () => {
                   </label>
                   <div className="space-y-2">
                     <button
-                      onClick={() => setSelectedCategories(undefined)}
+                      onClick={() => {
+                        setSelectedCategories(undefined);
+                        router.replace(pathname, { scroll: false });
+                      }}
                       className={`w-full text-left px-3 py-2 rounded transition-colors ${
                         !selectedCategories
                           ? 'bg-primary text-white'
@@ -144,7 +165,10 @@ const BrowseMealspage = () => {
                     {categories.map((cuisine) => (
                       <button
                         key={cuisine.id}
-                        onClick={() => setSelectedCategories(cuisine.name)}
+                        onClick={() => {
+                          setSelectedCategories(cuisine.name);
+                          router.replace(pathname, { scroll: false });
+                        }}
                         className={`w-full text-left px-3 py-2 rounded transition-colors ${
                           selectedCategories === cuisine.name
                             ? 'bg-primary text-white'
@@ -193,6 +217,7 @@ const BrowseMealspage = () => {
                     setSearch('');
                     setSelectedCategories(undefined);
                     setPriceRange([0, 50]);
+                    router.replace(pathname, { scroll: false });
                   }}
                 >
                   <Filter className="h-4 w-4 mr-2" />
@@ -204,7 +229,7 @@ const BrowseMealspage = () => {
             {/* Meals Grid */}
             <div className="lg:col-span-4">
               {/* Loading State */}
-              {loading || initialLoading ? (
+              {loading ? (
                 <div className="text-center py-12">
                   <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
                   <p className="text-lg text-muted-foreground mt-4">
@@ -227,6 +252,7 @@ const BrowseMealspage = () => {
                       setSearch('');
                       setSelectedCategories(undefined);
                       setPriceRange([0, 50]);
+                      router.replace(pathname, { scroll: false });
                     }}
                   >
                     Reset Filters
@@ -259,6 +285,15 @@ const BrowseMealspage = () => {
                       />
                     ))}
                   </div>
+
+                  {/* Pagination UI */}
+                  <div className="mt-12 flex justify-center">
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      onPageChange={setCurrentPage}
+                    />
+                  </div>
                 </>
               )}
             </div>
@@ -266,6 +301,21 @@ const BrowseMealspage = () => {
         </div>
       </div>
     </section>
+  );
+};
+
+const BrowseMealspage = () => {
+  return (
+    <Suspense
+      fallback={
+        <div className="text-center py-12">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          <p className="text-lg text-muted-foreground mt-4">Loading...</p>
+        </div>
+      }
+    >
+      <BrowseMealsContent />
+    </Suspense>
   );
 };
 

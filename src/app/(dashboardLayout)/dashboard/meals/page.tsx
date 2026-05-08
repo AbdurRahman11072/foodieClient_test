@@ -4,19 +4,38 @@ import mealService from '@/services/meals.service';
 import { userSerivce } from '@/services/user.service';
 import { SessionData } from '@/types/session';
 
-const MealsPage = async () => {
-  const session: SessionData = await userSerivce.getUserSession();
 
-  const meals = await mealService.getAllMealByRestaurants(
+
+interface PageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+const MealsPage = async ({ searchParams }: PageProps) => {
+  const session: SessionData = await userSerivce.getUserSession();
+  const params = await searchParams;
+
+  if (!session) return null;
+
+  const page = params.page ? parseInt(params.page as string) : 1;
+  const limit = 10;
+
+  const result = await mealService.getAllMealByRestaurants(
     session?.user?.restaurantId,
-    session.user.role
+    session.user.role,
+    page,
+    limit
   );
 
   return (
-    <MealsTable
-      meals={meals.data}
-      restaurantId={session?.user?.restaurantId as string}
-    />
+    <div className="space-y-4">
+      <MealsTable
+        meals={result.data.data}
+        restaurantId={session?.user?.restaurantId as string}
+        totalItems={result.data.total}
+        currentPage={page}
+        limit={limit}
+      />
+    </div>
   );
 };
 
