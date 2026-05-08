@@ -1,3 +1,6 @@
+import { userService } from '@/services/user.service';
+import { UsersTable } from '@/components/modules/dashboard/users/usersTable';
+
 interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
@@ -7,7 +10,7 @@ const userPage = async ({ searchParams }: PageProps) => {
   const page = params.page ? parseInt(params.page as string) : 1;
   const limit = 10;
 
-  const users = await userSerivce.getAllUsers(page, limit);
+  const users = await userService.getAllUsers(page, limit);
 
   return (
     <div className="space-y-4">

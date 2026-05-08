@@ -1,7 +1,7 @@
 // app/(dashboard)/dashboard/meals/page.tsx
 import { MealsTable } from '@/components/modules/dashboard/meals/meals-table';
 import mealService from '@/services/meals.service';
-import { userSerivce } from '@/services/user.service';
+import { userService } from '@/services/user.service';
 import { SessionData } from '@/types/session';
 
 
@@ -11,7 +11,7 @@ interface PageProps {
 }
 
 const MealsPage = async ({ searchParams }: PageProps) => {
-  const session: SessionData = await userSerivce.getUserSession();
+  const session: SessionData = await userService.getUserSession();
   const params = await searchParams;
 
   if (!session) return null;

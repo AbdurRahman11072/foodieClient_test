@@ -1,6 +1,6 @@
 import Stats from '@/components/modules/dashboard/stats';
 import statsService from '@/services/stats.service';
-import { userSerivce } from '@/services/user.service';
+import { userService } from '@/services/user.service';
 import restaurantService from '@/services/restaurant.service';
 import { PopularMeals, RecentRestaurants, NewUsers } from '@/components/modules/dashboard/DashboardLists';
 import { LayoutDashboard, Sparkles } from 'lucide-react';
@@ -10,7 +10,7 @@ import AnalyticsCharts from '@/components/modules/dashboard/analytics/AnalyticsC
 
 
 const Dashboard = async () => {
-  const session = await userSerivce.getUserSession();
+  const session = await userService.getUserSession();
 
   if (!session) return null;
 
@@ -19,7 +19,7 @@ const Dashboard = async () => {
 
   // Fetch additional data for the dashboard
   const restaurantsRes = session?.user?.role === 'admin' ? await restaurantService.getAllRestaurants() : null;
-  const usersRes = session?.user?.role === 'admin' ? await userSerivce.getAllUsers() : null;
+  const usersRes = session?.user?.role === 'admin' ? await userService.getAllUsers() : null;
 
   const restaurants = restaurantsRes?.data || [];
   const users = usersRes?.data || [];

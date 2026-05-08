@@ -1,6 +1,6 @@
 import React from 'react';
 import statsService from '@/services/stats.service';
-import { userSerivce } from '@/services/user.service';
+import { userService } from '@/services/user.service';
 import Stats from '@/components/modules/dashboard/stats';
 import AnalyticsCharts from '@/components/modules/dashboard/analytics/AnalyticsCharts';
 import { TrendingUp } from 'lucide-react';
@@ -8,7 +8,7 @@ import { TrendingUp } from 'lucide-react';
 
 
 const AnalyticsPage = async () => {
-  const session = await userSerivce.getUserSession();
+  const session = await userService.getUserSession();
   
   if (!session) return null;
   

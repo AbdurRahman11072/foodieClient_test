@@ -3,7 +3,7 @@ import ProfileHeader from '@/components/modules/home/profile/ProfileHeader';
 import RestaurantCard from '@/components/modules/home/profile/RestaurantCard';
 import restaurantService from '@/services/restaurant.service';
 import type { Restaurant } from '@/types/restaurant';
-import { userSerivce } from '@/services/user.service';
+import { userService } from '@/services/user.service';
 
 
 export const metadata = {
@@ -12,7 +12,7 @@ export const metadata = {
 };
 
 export default async function ProfilePage() {
-  const sessionData = await userSerivce.getUserSession();
+  const sessionData = await userService.getUserSession();
 
   if (!sessionData) return null;
 

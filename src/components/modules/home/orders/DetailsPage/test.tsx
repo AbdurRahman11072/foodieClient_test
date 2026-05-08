@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import orderService from '@/services/order.service';
-import { userSerivce } from '@/services/user.service';
+import { userService } from '@/services/user.service';
 import {
   AlertCircle,
   ArrowLeft,
@@ -125,7 +125,7 @@ const OrderDetailPage = async ({
   params: Promise<{ id: string }>;
 }) => {
   const { id } = await params;
-  const session = await userSerivce.getUserSession();
+  const session = await userService.getUserSession();
 
   if (!session?.user?.id) {
     return (

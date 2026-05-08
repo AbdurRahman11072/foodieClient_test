@@ -1,5 +1,5 @@
 import SettingsForm from '@/components/modules/home/profile/SettingsForm';
-import { userSerivce } from '@/services/user.service';
+import { userService } from '@/services/user.service';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
@@ -12,7 +12,7 @@ export const metadata = {
 
 
 export default async function SettingPage() {
-  const sessionData = await userSerivce.getUserSession();
+  const sessionData = await userService.getUserSession();
 
   if (!sessionData) return null;
 

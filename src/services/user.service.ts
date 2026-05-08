@@ -1,7 +1,7 @@
 import { env } from '@/env';
 import { cookies } from 'next/headers';
 
-export const userSerivce = {
+export const userService = {
   getUserSession: async () => {
     try {
       const cookieStore = await cookies();

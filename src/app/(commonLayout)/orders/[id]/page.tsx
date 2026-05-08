@@ -1,7 +1,7 @@
 import OrderDetails from '@/components/modules/home/orders/DetailsPage/orderDetails';
 import OrderSummary from '@/components/modules/home/orders/DetailsPage/orderSummary';
 import orderService from '@/services/order.service';
-import { userSerivce } from '@/services/user.service';
+import { userService } from '@/services/user.service';
 import { Order } from '@/types/order';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
@@ -15,7 +15,7 @@ const OrderDetailPage = async ({
   params: Promise<{ id: string }>;
 }) => {
   const { id } = await params;
-  const session = await userSerivce.getUserSession();
+  const session = await userService.getUserSession();
 
   const response = await orderService.getAllOrderByOrderId(id);
   const order: Order | null = response?.data;

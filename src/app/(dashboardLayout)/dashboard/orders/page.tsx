@@ -3,7 +3,7 @@
 import { OrderTable } from '@/components/modules/dashboard/orders/orderTable';
 import { Card } from '@/components/ui/card';
 import orderService from '@/services/order.service';
-import { userSerivce } from '@/services/user.service';
+import { userService } from '@/services/user.service';
 import { OrderItem } from '@/types/order';
 import { SessionData } from '@/types/session';
 
@@ -14,7 +14,7 @@ interface PageProps {
 }
 
 const OrdersPage = async ({ searchParams }: PageProps) => {
-  const session: SessionData = await userSerivce.getUserSession();
+  const session: SessionData = await userService.getUserSession();
   const params = await searchParams;
 
   if (!session) return null;
