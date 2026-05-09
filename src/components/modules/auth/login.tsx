@@ -1,40 +1,40 @@
-'use client';
-import { Button } from '@/components/ui/button';
+"use client";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Field, FieldError, FieldLabel } from '@/components/ui/field';
-import { Input } from '@/components/ui/input';
+} from "@/components/ui/card";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-} from '@/components/ui/input-group';
-import { env } from '@/env';
-import { authClient } from '@/lib/auth-client';
-import { zodResolver } from '@hookform/resolvers/zod';
+} from "@/components/ui/input-group";
+import { env } from "@/env";
+import { authClient } from "@/lib/auth-client";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-import { EyeIcon, EyeOffIcon, Loader2 } from 'lucide-react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { toast } from 'sonner';
-import z from 'zod';
+import { EyeIcon, EyeOffIcon, Loader2 } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import z from "zod";
 
 const formSchema = z.object({
   email: z.string(),
   password: z
     .string()
-    .min(8, 'Password must be at least 8 characters')
-    .max(32, 'Password must be at most 32 characters')
+    .min(8, "Password must be at least 8 characters")
+    .max(32, "Password must be at most 32 characters")
     .regex(
       /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).+$/,
-      'Must contain one capital letter, one small letter and a number'
+      "Must contain one capital letter, one small letter and a number",
     ),
 });
 
@@ -46,38 +46,35 @@ const Login = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
   });
   const [isPassword, setIsPassword] = useState(false);
 
   const onSubmit = async (formData: z.infer<typeof formSchema>) => {
     setIsLoading(true);
-    
 
     try {
-      const { data, error } = await authClient.signIn.email(formData);
+      const { data, error } = await authClient.signIn.email({
+        ...formData,
+        callbackURL: `${env.NEXT_PUBLIC_APP_URL}`,
+      });
       console.log(data);
-      
 
       if (error) {
         return toast.error(error.message);
-       setIsLoading(false)
+        setIsLoading(false);
       }
-
-      router.refresh();
-      
-      router.push('/');
     } catch (error) {
-      toast.error('Something went wrong. Please try again later');
-      setIsLoading(false)
+      toast.error("Something went wrong. Please try again later");
+      setIsLoading(false);
     }
   };
 
   const handlerGoogleLogin = async () => {
     await authClient.signIn.social({
-      provider: 'google',
+      provider: "google",
       callbackURL: `${env.NEXT_PUBLIC_APP_URL}`,
     });
   };
@@ -126,7 +123,7 @@ const Login = () => {
                   <InputGroup>
                     <InputGroupInput
                       id="password"
-                      type={isPassword ? 'text' : 'password'}
+                      type={isPassword ? "text" : "password"}
                       placeholder="Enter password"
                       required
                       {...field}
@@ -152,11 +149,9 @@ const Login = () => {
               )}
             />
             {isLoading ? (
-               <Button className="w-full text-white">
-               
+              <Button className="w-full text-white">
                 <Loader2 className="w-4 h-4 animate-spin" /> Sign In
               </Button>
-             
             ) : (
               <Button className="w-full text-white"> Sign In</Button>
             )}
