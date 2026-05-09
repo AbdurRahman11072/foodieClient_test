@@ -51,15 +51,12 @@ export const SignIn = async (userData: any) => {
       }
     }
 
-    if (!data.success) {
-      return data;
-    }
-
+    updateTag("AllUsers");
     return data;
   } catch (error) {
     return {
       success: false,
-      message: error instanceof Error ? error.message : "Failed to update user",
+      message: error instanceof Error ? error.message : "Failed Login",
       data: null,
     };
   }

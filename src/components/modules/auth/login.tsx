@@ -58,7 +58,13 @@ const Login = () => {
 
     try {
       const data = await SignIn(formData);
-      console.log(data);
+      if (data.code) {
+        toast.error(data.message);
+        setIsLoading(false);
+        return;
+      }
+
+      router.push("/");
     } catch (error) {
       toast.error("Something went wrong. Please try again later");
       setIsLoading(false);
