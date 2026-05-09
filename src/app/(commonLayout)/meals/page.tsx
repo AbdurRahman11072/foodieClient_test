@@ -1,24 +1,24 @@
-'use client';
+"use client";
 
-import { MealCard } from '@/components/modules/home/meals/mealCard';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Pagination } from '@/components/ui/pagination-custom';
-import { categoryService } from '@/services/category.service';
-import mealService from '@/services/meals.service';
-import { Meal } from '@/types/meals';
-import { Filter, Search } from 'lucide-react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Suspense, useEffect, useState } from 'react';
-import { useDebounce } from 'use-debounce';
+import { MealCard } from "@/components/modules/home/meals/mealCard";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Pagination } from "@/components/ui/pagination-custom";
+import { categoryService } from "@/services/category.service";
+import mealService from "@/services/meals.service";
+import { Meal } from "@/types/meals";
+import { Filter, Search } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+import { useDebounce } from "use-debounce";
 
 const BrowseMealsContent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  const categoryParam = searchParams.get('category');
+  const categoryParam = searchParams.get("category");
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<
     string | undefined
   >(categoryParam || undefined);
@@ -56,7 +56,7 @@ const BrowseMealsContent = () => {
         const data = await categoryService.getAllCategory();
         setCategories(data.data);
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        console.error("Error fetching categories:", error);
       }
     };
     fetchCategories();
@@ -75,6 +75,8 @@ const BrowseMealsContent = () => {
           limit: limit,
         });
 
+        console.log(data);
+
         if (
           data.data.data.length === 0 &&
           !debouncedSearch &&
@@ -90,7 +92,7 @@ const BrowseMealsContent = () => {
           setTotalPages(Math.ceil((data.data.totalMeal || 0) / limit));
         }
       } catch (error) {
-        console.error('Error fetching meals:', error);
+        console.error("Error fetching meals:", error);
         setMeals([]);
         setTotalPages(1);
       } finally {
@@ -156,8 +158,8 @@ const BrowseMealsContent = () => {
                       }}
                       className={`w-full text-left px-3 py-2 rounded transition-colors ${
                         !selectedCategories
-                          ? 'bg-primary text-white'
-                          : 'hover:bg-secondary'
+                          ? "bg-primary text-white"
+                          : "hover:bg-secondary"
                       }`}
                     >
                       All Cuisines
@@ -171,8 +173,8 @@ const BrowseMealsContent = () => {
                         }}
                         className={`w-full text-left px-3 py-2 rounded transition-colors ${
                           selectedCategories === cuisine.name
-                            ? 'bg-primary text-white'
-                            : 'hover:bg-secondary'
+                            ? "bg-primary text-white"
+                            : "hover:bg-secondary"
                         }`}
                       >
                         {cuisine.name}
@@ -214,7 +216,7 @@ const BrowseMealsContent = () => {
                   variant="outline"
                   className="w-full bg-transparent"
                   onClick={() => {
-                    setSearch('');
+                    setSearch("");
                     setSelectedCategories(undefined);
                     setPriceRange([0, 50]);
                     router.replace(pathname, { scroll: false });
@@ -249,7 +251,7 @@ const BrowseMealsContent = () => {
                     variant="outline"
                     className="mt-4"
                     onClick={() => {
-                      setSearch('');
+                      setSearch("");
                       setSelectedCategories(undefined);
                       setPriceRange([0, 50]);
                       router.replace(pathname, { scroll: false });
@@ -263,7 +265,7 @@ const BrowseMealsContent = () => {
                 <>
                   <div className="flex justify-between items-center mb-6">
                     <p className="text-sm text-muted-foreground">
-                      Showing {meals.length} meal{meals.length !== 1 ? 's' : ''}
+                      Showing {meals.length} meal{meals.length !== 1 ? "s" : ""}
                     </p>
                     {(search || selectedCategories || priceRange[1] < 50) && (
                       <p className="text-xs text-muted-foreground">
@@ -271,7 +273,7 @@ const BrowseMealsContent = () => {
                       </p>
                     )}
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {meals.map((meal) => (
                       <MealCard
                         key={meal.id}
