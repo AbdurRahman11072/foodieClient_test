@@ -1,5 +1,5 @@
-import { env } from '@/env';
-import { cookies } from 'next/headers';
+import { env } from "@/env";
+import { cookies } from "next/headers";
 
 export const userService = {
   getUserSession: async () => {
@@ -12,8 +12,8 @@ export const userService = {
           headers: {
             Cookie: cookieStore.toString(),
           },
-          cache: 'no-store',
-        }
+          cache: "no-store",
+        },
       );
       const session = await res.json();
 
@@ -30,8 +30,8 @@ export const userService = {
     try {
       const cookieStore = await cookies();
       const params = new URLSearchParams();
-      params.append('page', page.toString());
-      params.append('limit', limit.toString());
+      params.append("page", page.toString());
+      params.append("limit", limit.toString());
 
       const res = await fetch(
         `${env.NEXT_PUBLIC_BACKEND_API_URL}users?${params.toString()}`,
@@ -39,8 +39,8 @@ export const userService = {
           headers: {
             Cookie: cookieStore.toString(),
           },
-          next: { tags: ['AllUsers'] },
-        }
+          next: { tags: ["AllUsers"] },
+        },
       );
       const data = await res.json();
 
@@ -52,7 +52,7 @@ export const userService = {
     } catch (error) {
       return {
         success: false,
-        message: 'Something went wrong',
+        message: "Something went wrong",
         data: { data: [], total: 0 },
       };
     }

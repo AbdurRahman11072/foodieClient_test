@@ -1,4 +1,5 @@
 "use client";
+import { SignIn } from "@/actions/users";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -56,16 +57,8 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const { data, error } = await authClient.signIn.email({
-        ...formData,
-        callbackURL: `${env.NEXT_PUBLIC_APP_URL}`,
-      });
+      const data = await SignIn(formData);
       console.log(data);
-
-      if (error) {
-        return toast.error(error.message);
-        setIsLoading(false);
-      }
     } catch (error) {
       toast.error("Something went wrong. Please try again later");
       setIsLoading(false);
