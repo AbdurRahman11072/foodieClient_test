@@ -58,9 +58,12 @@ const Login = () => {
 
     try {
       const { data, error } = await authClient.signIn.email(formData);
+      console.log(data);
+      
 
       if (error) {
         return toast.error(error.message);
+       setIsLoading(false)
       }
 
       router.refresh();
@@ -68,6 +71,7 @@ const Login = () => {
       router.push('/');
     } catch (error) {
       toast.error('Something went wrong. Please try again later');
+      setIsLoading(false)
     }
   };
 
