@@ -1,5 +1,4 @@
 "use client";
-import { SignIn } from "@/actions/users";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -57,9 +56,10 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const data = await SignIn(formData);
-      if (data.code) {
-        toast.error(data.message);
+      const { data, error } = await authClient.signIn.email(formData);
+
+      if (error) {
+        toast.error(error.message);
         setIsLoading(false);
         return;
       }
