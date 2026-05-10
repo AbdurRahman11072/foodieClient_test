@@ -20,6 +20,7 @@ export const userService = {
       if (!session) {
         return null;
       }
+      console.log(session);
       return session;
     } catch (error) {
       return null;
