@@ -56,7 +56,10 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const { data, error } = await authClient.signIn.email(formData);
+      const { data, error } = await authClient.signIn.email({
+        ...formData,
+        callbackURL: `${env.NEXT_PUBLIC_APP_URL}/callback`,
+      });
 
       if (error) {
         toast.error(error.message);
