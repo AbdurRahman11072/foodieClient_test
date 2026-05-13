@@ -58,7 +58,7 @@ const Login = () => {
     try {
       const { data, error } = await authClient.signIn.email({
         ...formData,
-        callbackURL: `${env.NEXT_PUBLIC_APP_URL}/callback`,
+        callbackURL: `${env.NEXT_PUBLIC_APP_URL}`,
       });
 
       if (error) {
