@@ -30,7 +30,7 @@ const Hero = () => {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <Link href="/browse-meals" className="flex-1 sm:flex-none">
+                <Link href="/meals" className="flex-1 sm:flex-none">
                   <Button
                     type="button"
                     variant="hero"

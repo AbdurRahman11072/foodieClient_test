@@ -61,7 +61,7 @@ const SignUp = () => {
   const [isPassword, setIsPassword] = useState(false);
 
   const onSubmit = async (formData: z.infer<typeof formSchema>) => {
-    const toastId = toast.loading('Creating user');
+    
     const { name, email, password } = formData;
 
     try {
@@ -72,14 +72,14 @@ const SignUp = () => {
       });
 
       if (error) {
-        return toast.error(error.message, { id: toastId });
+        return toast.error(error.message, );
       }
       router.refresh();
-      toast.success('user created successfully', { id: toastId });
+     
       router.push('/');
     } catch (error) {
       toast.error('Something went wrong. Please try again later', {
-        id: toastId,
+       
       });
     }
   };

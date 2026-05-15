@@ -1,10 +1,10 @@
 import CheckoutPage from '@/components/modules/home/checkout/checkout';
-import { userSerivce } from '@/services/user.service';
+import { userService } from '@/services/user.service';
 
-export const dynamic = 'force-dynamic';
+
 
 const checkOutPage = async () => {
-  const session = await userSerivce.getUserSession();
+  const session = await userService.getUserSession();
 
   return <CheckoutPage session={session} />;
 };

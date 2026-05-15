@@ -6,7 +6,7 @@ import { BreadcrumbBasic } from './breadcame';
 const Header = () => {
   return (
     <header>
-      <div className="ml-auto flex justify-between items-center gap-1 border-b border-gray-500/10 h-16 px-4">
+      <div className="ml-auto flex justify-between items-center gap-1 border-b border-gray-500/10 h-18 px-4">
         <BreadcrumbBasic />
         <div className="ml-auto flex justify-center items-center gap-1">
           <AnimatedThemeToggler />

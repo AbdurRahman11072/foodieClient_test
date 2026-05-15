@@ -3,21 +3,35 @@
 import { OrderTable } from '@/components/modules/dashboard/orders/orderTable';
 import { Card } from '@/components/ui/card';
 import orderService from '@/services/order.service';
-import { userSerivce } from '@/services/user.service';
+import { userService } from '@/services/user.service';
 import { OrderItem } from '@/types/order';
 import { SessionData } from '@/types/session';
 
-const OrdersPage = async () => {
-  const session: SessionData = await userSerivce.getUserSession();
+
+
+interface PageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+const OrdersPage = async ({ searchParams }: PageProps) => {
+  const session: SessionData = await userService.getUserSession();
+  const params = await searchParams;
+
+  if (!session) return null;
+
   const role = session.user.role;
+  const page = params.page ? parseInt(params.page as string) : 1;
+  const limit = 10;
 
   const response = await orderService.getAllOrders(
     session.user.restaurantId as string,
-    session.user.role
+    session.user.role,
+    page,
+    limit
   );
 
   // Extract orders from response
-  let orders: OrderItem[] = response.data || [];
+  let orders: OrderItem[] = response.data.data || [];
 
   if (!response.success) {
     return (
@@ -45,11 +59,17 @@ const OrdersPage = async () => {
           </p>
         </div>
         <div className="text-sm text-muted-foreground">
-          Total Orders: {orders.length}
+          Total Orders: {response.data.total}
         </div>
       </div>
 
-      <OrderTable orders={orders} role={role} />
+      <OrderTable
+        orders={orders}
+        role={role}
+        totalItems={response.data.total}
+        currentPage={page}
+        limit={limit}
+      />
     </div>
   );
 };

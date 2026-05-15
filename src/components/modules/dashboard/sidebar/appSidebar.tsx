@@ -1,18 +1,7 @@
 'use client';
 
-import {
-  BarChart3,
-  ChevronDown,
-  ClipboardList,
-  LayoutDashboard,
-  Package,
-  ShoppingCart,
-  Sparkles,
-  Store,
-  Users,
-} from 'lucide-react';
-import { useState } from 'react';
-
+import logo2 from '@/assets/foodie_logo_dark_text.svg';
+import logo from '@/assets/foodie_logo_white_text.svg';
 import { Button } from '@/components/ui/button';
 import {
   Sidebar,
@@ -27,6 +16,19 @@ import {
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
 import { SessionData } from '@/types/session';
+import {
+  BarChart3,
+  ChevronDown,
+  ClipboardList,
+  LayoutDashboard,
+  Package,
+  ShoppingCart,
+  Store,
+  Users,
+} from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useState } from 'react';
 
 export function AppSidebar({ session }: { session: SessionData | null }) {
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({
@@ -46,7 +48,7 @@ export function AppSidebar({ session }: { session: SessionData | null }) {
 
   let menuItems = [
     {
-      title: 'Dashbaord',
+      title: 'Dashboard',
       icon: LayoutDashboard,
       href: '/dashboard',
     },
@@ -86,7 +88,7 @@ export function AppSidebar({ session }: { session: SessionData | null }) {
   if (session?.user?.role === 'admin') {
     menuItems = [
       {
-        title: 'Dashbaord',
+        title: 'Dashboard',
         icon: LayoutDashboard,
         href: '/dashboard',
       },
@@ -116,9 +118,14 @@ export function AppSidebar({ session }: { session: SessionData | null }) {
         href: '/dashboard/orders',
       },
       {
-        title: 'Catagory',
+        title: 'Category',
         icon: ClipboardList,
         href: '/dashboard/category',
+      },
+      {
+        title: 'Analytics',
+        icon: BarChart3,
+        href: '/dashboard/analytics',
       },
     ];
   }
@@ -126,15 +133,30 @@ export function AppSidebar({ session }: { session: SessionData | null }) {
   return (
     <Sidebar>
       <SidebarHeader className="border-b border-sidebar-border">
-        <div className="flex items-center gap-2 px-2 py-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-purple-600">
-            <Sparkles className="h-5 w-5 text-white" />
-          </div>
-          <span className="font-semibold text-foreground">Foodie</span>
+        <div className="flex justify-center items-center gap-2 px-2 py-2">
+          <Link href="/" className="flex items-center gap-2 w-44 h-10">
+            <Image
+              src={logo}
+              className="w-full object-cover hidden dark:block"
+              alt="logo"
+              width={70}
+              height={70}
+            />
+            <Image
+              src={logo2}
+              className="w-full object-cover block dark:hidden"
+              alt="logo"
+              width={70}
+              height={70}
+            />
+            {/* <span className="text-lg font-semibold tracking-tighter">
+                {logo?.title}
+              </span> */}
+          </Link>
         </div>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className="p-2">
         <SidebarMenu>
           {menuItems.map((item) => (
             <SidebarMenuItem key={item.title}>

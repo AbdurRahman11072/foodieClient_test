@@ -1,17 +1,17 @@
-'use server';
+"use server";
 
-import { env } from '@/env';
-import { updateTag } from 'next/cache';
-import { cookies } from 'next/headers';
+import { env } from "@/env";
+import { updateTag } from "next/cache";
+import { cookies } from "next/headers";
 
 export const UpdateUserAction = async (id: string, userData: any) => {
   try {
     const cookieStore = await cookies();
 
     const res = await fetch(`${env.NEXT_PUBLIC_BACKEND_API_URL}users/${id}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Cookie: cookieStore.toString(),
       },
       body: JSON.stringify(userData),
@@ -23,12 +23,12 @@ export const UpdateUserAction = async (id: string, userData: any) => {
       return data;
     }
 
-    updateTag('AllUsers');
+    updateTag("AllUsers");
     return data;
   } catch (error) {
     return {
       success: false,
-      message: error instanceof Error ? error.message : 'Failed to update user',
+      message: error instanceof Error ? error.message : "Failed to update user",
       data: null,
     };
   }

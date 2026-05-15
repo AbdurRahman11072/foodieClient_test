@@ -1,5 +1,6 @@
 import { categoryService } from '@/services/category.service';
 import Image from 'next/image';
+import Link from 'next/link';
 
 type Category = {
   id: string;
@@ -39,8 +40,9 @@ const HomeCategories = async () => {
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-1">
         {categories?.data?.map((category: Category) => (
-          <div
+          <Link
             key={category.id}
+            href={`/meals?category=${category.name}`}
             className="group relative flex flex-col items-center p-6  
              rounded-2xl border-none
             transition-all duration-300 ease-out
@@ -96,7 +98,7 @@ const HomeCategories = async () => {
             opacity-0 group-hover:opacity-100 transition-all duration-300
             group-hover:w-16"
             />
-          </div>
+          </Link>
         ))}
       </div>
     </section>

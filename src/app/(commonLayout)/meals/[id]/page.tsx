@@ -1,7 +1,9 @@
 import MealDetailsCard from '@/components/modules/home/meals/mealDetails';
 import mealService from '@/services/meals.service';
-import { userSerivce } from '@/services/user.service';
+import { userService } from '@/services/user.service';
 import Link from 'next/link';
+
+
 
 const MealDetailPage = async ({
   params,
@@ -10,7 +12,7 @@ const MealDetailPage = async ({
 }) => {
   const { id } = await params;
   const mealData = await mealService.getMealDetailsById(id);
-  const session = await userSerivce.getUserSession();
+  const session = await userService.getUserSession();
 
   // Check if data exists (different structure than before)
   if (!mealData?.data || mealData.data.length === 0) {

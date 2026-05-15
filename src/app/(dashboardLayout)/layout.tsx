@@ -1,10 +1,10 @@
 import { AppSidebar } from '@/components/modules/dashboard/sidebar/appSidebar';
 import Header from '@/components/modules/dashboard/sidebar/sidebarHeader';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
-import { userSerivce } from '@/services/user.service';
+import { userService } from '@/services/user.service';
 
 const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
-  const session = await userSerivce.getUserSession();
+  const session = await userService.getUserSession();
 
   return (
     <SidebarProvider>

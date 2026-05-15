@@ -1,10 +1,10 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { userRole } from './constants';
-import { userSerivce } from './services/user.service';
+import { userService } from './services/user.service';
 
 // This function can be marked `async` if using `await` inside
 export async function proxy(request: NextRequest) {
-  const userSession = await userSerivce.getUserSession();
+  const userSession = await userService.getUserSession();
   const currentPath = request.nextUrl.pathname;
   // console.log(currentPath);
 
