@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import Logo2 from '@/assets/foodie_logo_dark_text.svg';
-import { Menu, ShoppingCart } from 'lucide-react';
+import Logo2 from "@/assets/foodie_logo_dark_text.svg";
+import { Menu, ShoppingCart } from "lucide-react";
 
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion';
-import { AnimatedThemeToggler } from '@/components/ui/animated-theme-toggler';
-import { Button } from '@/components/ui/button';
+} from "@/components/ui/accordion";
+import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
+import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -18,23 +18,25 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from '@/components/ui/navigation-menu';
+} from "@/components/ui/navigation-menu";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@/components/ui/sheet';
-import { cn } from '@/lib/utils';
-import { MenuItem, Navbar1Props } from '@/types/navbar';
-import Image from 'next/image';
-import Link from 'next/link';
-import DropDownMenu from './dropDownMenu';
+} from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
+import { MenuItem, Navbar1Props } from "@/types/navbar";
+import Image from "next/image";
+import Link from "next/link";
+import DropDownMenu from "./dropDownMenu";
 
 const Navbar1 = ({ logo, menu, auth, session, className }: Navbar1Props) => {
+  console.log(session);
+
   return (
-    <section className={cn('py-4 border-b shadow-sm', className)}>
+    <section className={cn("py-4 border-b shadow-sm", className)}>
       <div className="container mx-auto ">
         {/* Desktop Menu */}
         <nav className="hidden items-center justify-between lg:flex">
