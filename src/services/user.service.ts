@@ -6,6 +6,8 @@ export const userService = {
     try {
       const cookieStore = await cookies();
 
+      console.log("user Session", cookieStore);
+
       const res = await fetch(
         `${env.NEXT_PUBLIC_BACKEND_BETTER_AUTH_URL}get-session`,
         {

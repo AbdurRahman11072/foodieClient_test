@@ -1,9 +1,11 @@
-import { Navbar1 } from '@/components/modules/home/navbar1';
-import { auth, logo, menu } from '@/routes/home.routes';
-import { userService } from '@/services/user.service';
+import { Navbar1 } from "@/components/modules/home/navbar1";
+import { auth, logo, menu } from "@/routes/home.routes";
+import { userService } from "@/services/user.service";
 
 const commonLayout = async ({ children }: { children: React.ReactNode }) => {
   const session = await userService.getUserSession();
+
+  console.log(session);
 
   return (
     <main>
