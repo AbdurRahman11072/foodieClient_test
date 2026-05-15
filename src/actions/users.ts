@@ -33,3 +33,18 @@ export const UpdateUserAction = async (id: string, userData: any) => {
     };
   }
 };
+
+export const setTokenAction = async (token: string) => {
+  try {
+    const cookieStore = await cookies();
+    cookieStore.set("better-auth.session_token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
+      partitioned: true,
+    });
+    return { success: true, message: "Token set successfully", data: null };
+  } catch (error) {
+    return { success: false, message: "Login failed", data: null };
+  }
+};
