@@ -68,8 +68,8 @@ const Login = () => {
       }
       const setToken = await setTokenAction(data?.token as string);
 
-      if (!setToken.success) {
-        toast.error(setToken.message);
+      if (!setToken?.success) {
+        toast.error(setToken?.message);
         setIsLoading(false);
         return;
       }
@@ -158,39 +158,12 @@ const Login = () => {
               )}
             />
             {isLoading ? (
-              <Button className="w-full text-white" disabled>
+              <Button className="w-full text-white">
                 <Loader2 className="w-4 h-4 animate-spin" /> Sign In
               </Button>
             ) : (
-              <Button className="w-full text-white" type="submit"> Sign In</Button>
+              <Button className="w-full text-white"> Sign In</Button>
             )}
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-4">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="w-full text-xs"
-                onClick={() => {
-                  form.setValue("email", "user123@gmail.com");
-                  form.setValue("password", "User123@");
-                }}
-              >
-                Provider login
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="w-full text-xs"
-                onClick={() => {
-                  form.setValue("email", "rjrahman019@gmail.com");
-                  form.setValue("password", "Admin123@");
-                }}
-              >
-                Admin login
-              </Button>
-            </div>
           </form>
           <div>
             <div className="my-6 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
