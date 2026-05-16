@@ -30,8 +30,8 @@ interface RestaurantInfoCardProps {
     closingTime: string;
     offday: string;
     createdAt: string;
-    meals: any[];
-    reviews: any[];
+    meals: unknown[];
+    reviews: unknown[];
   };
   averageRating: number;
 }
@@ -42,13 +42,6 @@ export function RestaurantInfoCard({
 }: RestaurantInfoCardProps) {
   const [isLiked, setIsLiked] = useState(false);
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
 
   const isOpenNow = () => {
     const now = new Date();

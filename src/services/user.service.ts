@@ -24,7 +24,7 @@ export const userService = {
       }
       console.log(session);
       return session;
-    } catch (error) {
+    } catch {
       return null;
     }
   },
@@ -52,7 +52,7 @@ export const userService = {
       }
 
       return data;
-    } catch (error) {
+    } catch {
       return {
         success: false,
         message: "Something went wrong",

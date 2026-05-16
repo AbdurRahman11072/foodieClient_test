@@ -15,7 +15,7 @@ export function EmptyOrdersState() {
           No Orders Yet
         </h2>
         <p className="text-muted-foreground mb-6 max-w-md">
-          Looks like you haven't placed any orders yet. Start exploring our
+          Looks like you haven&apos;t placed any orders yet. Start exploring our
           delicious meals!
         </p>
         <Link href="/meals">

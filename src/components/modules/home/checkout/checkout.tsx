@@ -26,6 +26,7 @@ export default function CheckoutPage({ session }: { session: SessionData }) {
   useEffect(() => {
     const storedCart = localStorage.getItem('cart');
     if (storedCart) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCart(JSON.parse(storedCart));
     }
   }, []);
@@ -139,7 +140,7 @@ export default function CheckoutPage({ session }: { session: SessionData }) {
                         className="w-full"
                       />
                       <p className="text-xs text-muted-foreground mt-1">
-                        We'll call you to confirm the order
+                        We&apos;ll call you to confirm the order
                       </p>
                     </div>
 

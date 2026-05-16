@@ -151,7 +151,7 @@ export function RestaurantDetails({ restaurant }: RestaurantDetailsProps) {
                   No Menu Items Yet
                 </h3>
                 <p className="text-muted-foreground">
-                  This restaurant hasn't added any menu items.
+                  This restaurant hasn&apos;t added any menu items.
                 </p>
               </Card>
             ) : (

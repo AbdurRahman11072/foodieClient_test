@@ -33,7 +33,7 @@ const orderService = {
       }
 
       return data;
-    } catch (error) {
+    } catch {
       return {
         success: false,
         message: 'Something went wrong',
