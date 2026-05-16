@@ -34,7 +34,7 @@ const DropDownMenu = ({
   const signOut = async () => {
     const toastId = toast.loading('Login out user');
     try {
-      const { data, error } = await authClient.signOut();
+      const { data: _, error: _ } = await authClient.signOut();
 
       if (error) {
         toast.error(error.message, { id: toastId });

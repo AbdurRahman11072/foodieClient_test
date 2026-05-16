@@ -22,21 +22,16 @@ interface OrderItemCardProps {
 
 export function OrderItemCard({
   item,
-  orderStatus,
   session,
 }: OrderItemCardProps) {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
-  const [hasReviewed, setHasReviewed] = useState(false);
+  const [hasReviewed, setHasReviewed] = useState(
+    () => (item.meal?.reviews?.length ?? 0) > 0
+  );
 
   const ItemStatusIcon = ITEM_STATUS_CONFIG[item.status]?.icon || Package;
   const itemStatusConfig = ITEM_STATUS_CONFIG[item.status];
 
-  useEffect(() => {
-    const reviewCount = item.meal?.reviews?.length ?? 0;
-    if (reviewCount > 0) {
-      setHasReviewed(true);
-    }
-  }, [item.meal?.reviews]);
 
   const handleReviewSuccess = () => {
     setHasReviewed(true);

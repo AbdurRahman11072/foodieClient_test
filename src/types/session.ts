@@ -28,10 +28,10 @@ interface User {
 }
 
 // Complete session response type
-interface SessionResponse {
-  session: Session;
-  user: User;
-}
+// interface SessionResponse {
+//   session: Session;
+//   user: User;
+// }
 
 // Or if you want a more reusable approach with generics
 export type SessionData = {

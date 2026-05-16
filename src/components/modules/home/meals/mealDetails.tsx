@@ -57,8 +57,8 @@ const MealDetailsCard = ({ meal, session }: MealDetailsCardProps) => {
     return `${opening} - ${closing}`;
   };
 
-  const customerId = session?.user.id;
-  const restaurantId = session?.user.restaurantId;
+  // const customerId = session?.user.id;
+  // const restaurantId = session?.user.restaurantId;
 
   const addToCart = async () => {
     const cartData = {

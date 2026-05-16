@@ -28,7 +28,6 @@ export default function AddRestaurantForm({ ownerId }: { ownerId: string }) {
   const {
     control,
     handleSubmit,
-    formState: { errors },
     reset,
     setValue,
   } = useForm<RestaurantFormData>({

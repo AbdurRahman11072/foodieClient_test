@@ -20,13 +20,11 @@ import { toast } from 'sonner';
 interface DeleteCategoryProps {
   categoryId: string;
   categoryName: string;
-  trigger?: React.ReactNode;
 }
 
 const DeleteCategory = ({
   categoryId,
   categoryName,
-  trigger,
 }: DeleteCategoryProps) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -46,7 +44,7 @@ const DeleteCategory = ({
       setOpen(false);
       router.refresh();
       toast.success('Category deleted successfully', { id: toastId });
-    } catch (error) {
+    } catch {
       toast.error('Error deleting category', { id: toastId });
     } finally {
       setIsLoading(false);
@@ -73,7 +71,7 @@ const DeleteCategory = ({
           <AlertDialogDescription>
             This action cannot be undone. This will permanently delete the
             category
-            <span className="font-semibold"> "{categoryName}"</span> and remove
+            <span className="font-semibold"> &quot;{categoryName}&quot;</span> and remove
             all associated data.
           </AlertDialogDescription>
         </AlertDialogHeader>

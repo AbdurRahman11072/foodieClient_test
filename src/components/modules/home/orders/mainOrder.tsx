@@ -15,7 +15,7 @@ export default function MainOrder({
   session,
   orders: initialOrders,
 }: MainOrderProps) {
-  const [orders, setOrders] = useState<Order[]>(initialOrders);
+  const [orders] = useState<Order[]>(initialOrders);
 
   return (
     <main className="min-h-screen bg-background">

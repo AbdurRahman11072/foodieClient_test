@@ -14,7 +14,7 @@ const statsService = {
       const data = await res.json();
 
       return data;
-    } catch (error) {
+    } catch {
       return { success: false, message: 'Something went wrong', data: null };
     }
   },

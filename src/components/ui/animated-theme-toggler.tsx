@@ -17,14 +17,15 @@ export const AnimatedThemeToggler = ({
   ...props
 }: AnimatedThemeTogglerProps) => {
   const { theme, setTheme } = useTheme();
-  const [isDark, setIsDark] = useState(false);
   const [mounted, setMounted] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
-    setIsDark(theme === 'dark');
-  }, [theme]);
+  }, []);
+
+  const isDark = theme === 'dark';
 
   const toggleTheme = useCallback(() => {
     const button = buttonRef.current;

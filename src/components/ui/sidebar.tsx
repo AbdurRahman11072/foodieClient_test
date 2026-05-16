@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/tooltip';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
-import { SessionData } from '@/types/session';
+
 import { PanelLeftIcon } from 'lucide-react';
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state';
@@ -304,10 +304,8 @@ function SidebarRail({ className, ...props }: React.ComponentProps<'button'>) {
 
 function SidebarInset({
   className,
-  session,
   children,
-  ...props
-}: React.ComponentProps<'main'> & { session?: SessionData } & {
+}: React.ComponentProps<'main'> & {
   children: React.ReactNode;
 }) {
   return (

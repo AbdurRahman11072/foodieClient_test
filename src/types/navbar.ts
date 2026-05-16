@@ -1,3 +1,5 @@
+import type { SessionData } from './session';
+
 export interface MenuItem {
   title: string;
   url: string;
@@ -26,5 +28,5 @@ export interface Navbar1Props {
       url: string;
     };
   };
-  session?: any;
+  session?: SessionData | null;
 }

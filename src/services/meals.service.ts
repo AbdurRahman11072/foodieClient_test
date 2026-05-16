@@ -27,7 +27,7 @@ const mealService = {
         return { success: false, data: { data: [], total: 0 } };
       }
       return data;
-    } catch (error) {
+    } catch {
       return {
         success: false,
         message: "Something went wrong",
@@ -44,7 +44,7 @@ const mealService = {
       const data = await res.json();
 
       return data;
-    } catch (error) {
+    } catch {
       return {
         success: false,
         message: "Something went wrong",
@@ -87,7 +87,7 @@ const mealService = {
       const data = await res.json();
 
       return data;
-    } catch (error) {
+    } catch {
       return {
         success: false,
         message: "Something went wrong",

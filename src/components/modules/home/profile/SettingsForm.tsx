@@ -40,7 +40,7 @@ import {
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, type Control } from 'react-hook-form';
 import { toast } from 'sonner';
 
 interface SettingsFormProps {
@@ -221,6 +221,55 @@ const ProfileInfoForm = ({
   );
 };
 
+const PasswordField = ({
+  name,
+  id,
+  label,
+  show,
+  onToggle,
+  control,
+}: {
+  name: 'currentPassword' | 'newPassword' | 'confirmPassword';
+  id: string;
+  label: string;
+  show: boolean;
+  onToggle: () => void;
+  control: Control<ChangePasswordFormData>;
+}) => (
+  <Controller
+    name={name}
+    control={control}
+    render={({ field, fieldState }) => (
+      <Field data-invalid={fieldState.invalid}>
+        <FieldLabel htmlFor={id}>{label}</FieldLabel>
+        <InputGroup>
+          <InputGroupInput
+            id={id}
+            type={show ? 'text' : 'password'}
+            placeholder="••••••••"
+            {...field}
+            aria-invalid={fieldState.invalid}
+          />
+          <InputGroupAddon align="inline-end">
+            {show ? (
+              <EyeIcon
+                onClick={onToggle}
+                className="cursor-pointer text-muted-foreground hover:text-foreground transition-colors"
+              />
+            ) : (
+              <EyeOffIcon
+                onClick={onToggle}
+                className="cursor-pointer text-muted-foreground hover:text-foreground transition-colors"
+              />
+            )}
+          </InputGroupAddon>
+        </InputGroup>
+        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+      </Field>
+    )}
+  />
+);
+
 /* ─────────────────────────────────────────
    Change Password Form
 ───────────────────────────────────────── */
@@ -263,53 +312,6 @@ const ChangePasswordForm = () => {
 
   const { isSubmitting } = form.formState;
 
-  const PasswordField = ({
-    name,
-    id,
-    label,
-    show,
-    onToggle,
-  }: {
-    name: 'currentPassword' | 'newPassword' | 'confirmPassword';
-    id: string;
-    label: string;
-    show: boolean;
-    onToggle: () => void;
-  }) => (
-    <Controller
-      name={name}
-      control={form.control}
-      render={({ field, fieldState }) => (
-        <Field data-invalid={fieldState.invalid}>
-          <FieldLabel htmlFor={id}>{label}</FieldLabel>
-          <InputGroup>
-            <InputGroupInput
-              id={id}
-              type={show ? 'text' : 'password'}
-              placeholder="••••••••"
-              {...field}
-              aria-invalid={fieldState.invalid}
-            />
-            <InputGroupAddon align="inline-end">
-              {show ? (
-                <EyeIcon
-                  onClick={onToggle}
-                  className="cursor-pointer text-muted-foreground hover:text-foreground transition-colors"
-                />
-              ) : (
-                <EyeOffIcon
-                  onClick={onToggle}
-                  className="cursor-pointer text-muted-foreground hover:text-foreground transition-colors"
-                />
-              )}
-            </InputGroupAddon>
-          </InputGroup>
-          {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-        </Field>
-      )}
-    />
-  );
-
   return (
     <Card className="border-border/50 shadow-sm dark:bg-card/40">
       <CardHeader className="pb-4">
@@ -333,6 +335,7 @@ const ChangePasswordForm = () => {
             label="Current Password"
             show={showCurrent}
             onToggle={() => setShowCurrent((v) => !v)}
+            control={form.control}
           />
           <PasswordField
             name="newPassword"
@@ -340,6 +343,7 @@ const ChangePasswordForm = () => {
             label="New Password"
             show={showNew}
             onToggle={() => setShowNew((v) => !v)}
+            control={form.control}
           />
           <PasswordField
             name="confirmPassword"
@@ -347,6 +351,7 @@ const ChangePasswordForm = () => {
             label="Confirm New Password"
             show={showConfirm}
             onToggle={() => setShowConfirm((v) => !v)}
+            control={form.control}
           />
 
           <Button
