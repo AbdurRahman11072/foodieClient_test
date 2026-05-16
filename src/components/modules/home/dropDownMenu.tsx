@@ -34,14 +34,15 @@ const DropDownMenu = ({
   const signOut = async () => {
     const toastId = toast.loading('Login out user');
     try {
-      const { data: _, error: _ } = await authClient.signOut();
+      const { error } = await authClient.signOut();
 
       if (error) {
         toast.error(error.message, { id: toastId });
+      } else {
+        toast.success('LogOut successfull', { id: toastId });
+        router.push('/');
+        router.refresh();
       }
-      toast.success('LogOut successfull', { id: toastId });
-      router.push('/');
-      router.refresh();
     } catch (error) {
       toast.error('Something went wrong. Please try again later', {
         id: toastId,
