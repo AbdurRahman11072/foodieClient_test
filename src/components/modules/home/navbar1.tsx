@@ -36,7 +36,8 @@ import DropDownMenu from "./dropDownMenu";
 const Navbar1 = ({ logo, menu, auth, session, className }: Navbar1Props) => {
   const session2 = authClient?.useSession();
 
-  console.log("navbar", session2);
+  console.log("session", session);
+  console.log("session2", session2);
 
   return (
     <section className={cn("py-4 border-b shadow-sm", className)}>
@@ -267,3 +268,4 @@ const SubMenuLink = ({ item }: { item: MenuItem }) => {
 };
 
 export { Navbar1 };
+
